@@ -22,7 +22,7 @@ const { clientURL } = require("./secret");
 //middleware
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://allcartify.netlify.app",
+  "https://traveltestdemoapp.netlify.app",
   "https://allcartify.com",
 ];
 const corsOptions = {
