@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./auth.css";
 import apiUrl from "../secret";
+import Spinner from "react-bootstrap/Spinner";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -14,6 +15,14 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidEmail = emailRegex.test(email);
+
+    if (!isValidEmail) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
     if (!name || !email || !password) {
       setError("All fields are required");
       console.error("Missing input data");
@@ -52,6 +61,11 @@ const Register = () => {
 
   return (
     <div className="register">
+      {isLoading && (
+        <div className="text-center">
+          <Spinner animation="border" variant="primary" />
+        </div>
+      )}
       <div className="register-form">
         <h2 className="text-center">Register</h2>
         <form className="form-control" onSubmit={handleRegister}>
