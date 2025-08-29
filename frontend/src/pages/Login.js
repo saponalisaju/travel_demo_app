@@ -119,7 +119,7 @@ const Login = () => {
         </form>
         <div className="fs-6 text-center text-muted">
           You Have not account ?
-          <a className="fst-italic text-decoration-none" href="/profile">
+          <a className="fst-italic text-decoration-none" href="/register">
             &nbsp;Click here
           </a>
         </div>
