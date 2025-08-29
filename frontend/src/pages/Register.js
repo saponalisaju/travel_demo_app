@@ -24,6 +24,7 @@ const Register = () => {
     setIsLoading(true);
     setError(""); // Clear previous error message
     const formData = { name, email, password };
+
     try {
       const response = await axios.post(
         `${apiUrl}/api/users/register`,
