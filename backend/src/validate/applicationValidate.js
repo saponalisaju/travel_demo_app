@@ -58,6 +58,55 @@ exports.applicationValidate = [
     })
     .withMessage("User image is required"),
 
+  body("file0")
+    .optional()
+    .custom((value, { req }) => {
+      if (!req.file) {
+        throw new Error("User file is required");
+      }
+      return true;
+    }),
+  body("file1")
+    .optional()
+    .custom((value, { req }) => {
+      if (!req.file) {
+        throw new Error("User file is required");
+      }
+      return true;
+    }),
+  body("file2")
+    .optional()
+    .custom((value, { req }) => {
+      if (!req.file) {
+        throw new Error("User file is required");
+      }
+      return true;
+    }),
+  body("file3")
+    .optional()
+    .custom((value, { req }) => {
+      if (!req.file) {
+        throw new Error("User file is required");
+      }
+      return true;
+    }),
+  body("file4")
+    .optional()
+    .custom((value, { req }) => {
+      if (!req.file) {
+        throw new Error("User file is required");
+      }
+      return true;
+    }),
+  body("file5")
+    .optional()
+    .custom((value, { req }) => {
+      if (!req.file) {
+        throw new Error("User file is required");
+      }
+      return true;
+    }),
+
   body("passport").trim().notEmpty().withMessage("Passport number required"),
   body("issuedCountry")
     .trim()

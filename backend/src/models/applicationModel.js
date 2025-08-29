@@ -1,7 +1,5 @@
 require("dotenv").config();
-
 const mongoose = require("mongoose");
-const { defaultImagePath } = require("../../secret");
 
 const formatDate = () => {
   const date = new Date();
@@ -27,8 +25,23 @@ const applicationSchema = mongoose.Schema(
     dutyDuration: { type: String, required: true },
     jobTitle: { type: String, required: true },
     salary: { type: String, required: true },
-    image: { type: String, default: defaultImagePath, required: true },
-    file: { type: String, default: "" },
+
+    image: { type: String, default: "default.png", required: true },
+    imagePublicId: { type: String, default: "" },
+
+    file0: { type: String, default: "default.png" },
+    file0PublicId: { type: String, default: "" },
+    file1: { type: String, default: "default.png" },
+    file1PublicId: { type: String, default: "" },
+    file2: { type: String, default: "default.png" },
+    file2PublicId: { type: String, default: "" },
+    file3: { type: String, default: "default.png" },
+    file3PublicId: { type: String, default: "" },
+    file4: { type: String, default: "default.png" },
+    file4PublicId: { type: String, default: "" },
+    file5: { type: String, default: "default.png" },
+    file5PublicId: { type: String, default: "" },
+
     passport: { type: String, required: true },
     issuedCountry: { type: String, required: true },
     isStatus: { type: String, default: "pending" },

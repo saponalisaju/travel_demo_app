@@ -64,11 +64,13 @@ exports.fetchApplicationEnquiry = async (req, res) => {
     search1 = "",
     search2 = "",
   } = req.query;
+
   const startDay = new Date(search2);
   startDay.setHours(0, 0, 0, 0);
 
   const endDay = new Date(search2);
   endDay.setHours(23, 59, 59, 999);
+
   try {
     const query = {
       passport: { $regex: search, $options: "i" },
