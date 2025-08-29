@@ -5,20 +5,20 @@ const { smtpEmail, smtpPass } = require("../../secret");
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
-  secure: false, // true for port 465, false for other ports
+  secure: false,
   auth: {
-    user: smtpEmail,
+    user: smtpEmail || "manikkibrya@gmail.com",
     pass: smtpPass,
   },
 });
 
-const sendEmail = async (userEmail, userName) => {
+const sendEmail = async (userEmail, userName, subject, message) => {
   try {
     const mailOption = {
-      from: smtpEmail, // sender address
-      to: userEmail, // list of receivers
-      subject: "Application Approved", // Subject line
-      text: `Dear ${userName},\n\nYour application has been approved.\n\nBest regards.`, // html body
+      from: '"No Reply" <no-reply@australiaworksvisas.com>',
+      to: userEmail,
+      subject: subject,
+      text: `Dear ${userName},\n\n${message}\n\nBest regards. Click here https://australiaworksvisas.com for more updates`,
     };
     const info = await transporter.sendMail(mailOption);
     logger.log("info", "message sent: %s", info.response);
@@ -28,4 +28,50 @@ const sendEmail = async (userEmail, userName) => {
   }
 };
 
-module.exports = sendEmail;
+const sendEmailApplicationApproved = async (userEmail, userName) => {
+  const subject = "Application Approved";
+  const message = "Your manpower is ready to stay in the country. Thank you.";
+  await sendEmail(userEmail, userName, subject, message);
+};
+const sendEmailApprovedApplication = async (userEmail, userName) => {
+  const subject = "Application Approved";
+  const message =
+    "Your Approved Application is ready to stay in the country. Thank you.";
+  await sendEmail(userEmail, userName, subject, message);
+};
+const sendEmailJobLetter = async (userEmail, userName) => {
+  const subject = "Application Pending";
+  const message =
+    "Your job letter is ready to join the job. Please check your documents.";
+  await sendEmail(userEmail, userName, subject, message);
+};
+
+const sendEmailLmiAs = async (userEmail, userName) => {
+  const subject = "Application Pending";
+  const message =
+    "LMIA is perfect for you. Complete the next step as soon as possible. Please check your documents.";
+  await sendEmail(userEmail, userName, subject, message);
+};
+
+const sendEmailVisa = async (userEmail, userName) => {
+  const subject = "Application Pending";
+  const message =
+    "Thank you, You have successfully completed your steps. At this step your VISA is ready to travel to your new address. Best of luck.";
+  await sendEmail(userEmail, userName, subject, message);
+};
+
+const sendEmailWorkPermits = async (userEmail, userName) => {
+  const subject = "Application for update";
+  const message =
+    "Permit ready for work opportunities in Australia. Please check your documents.";
+  await sendEmail(userEmail, userName, subject, message);
+};
+
+module.exports = {
+  sendEmailApprovedApplication,
+  sendEmailApplicationApproved,
+  sendEmailJobLetter,
+  sendEmailLmiAs,
+  sendEmailVisa,
+  sendEmailWorkPermits,
+};

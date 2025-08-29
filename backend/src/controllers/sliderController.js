@@ -2,6 +2,7 @@ const deleteFile = require("../helpers/deleteFileFromCloudinary");
 const Slider = require("../models/sliderModel");
 const path = require("path");
 const fs = require("fs");
+const { uploadFile } = require("../helpers/uploadCloudFile");
 
 exports.fetchSlider = async (req, res) => {
   try {
@@ -14,17 +15,31 @@ exports.fetchSlider = async (req, res) => {
 };
 exports.addSlider = async (req, res) => {
   try {
-    const image = req.file?.filename;
-    const path = req.file?.path;
     if (!req.file || !req.body.title) {
       return res.status(400).json({ message: "Image and title are required" });
     }
-    const newSlider = new Slider({ ...req.body, image: image, path: path });
+    const image = req.file?.path;
+    let secure_url = "";
+    let public_id = "";
+    if (image) {
+      ({ secure_url, public_id } = await uploadFile(
+        image,
+        "travelDemo/slider"
+      ));
+    }
+
+    const newSlider = new Slider({
+      ...req.body,
+      image: secure_url,
+      imagePublicId: public_id,
+    });
     await newSlider.save();
     res.status(201).json(newSlider);
   } catch (error) {
     console.error("Error adding slider:", error);
-    res.status(500).json({ message: error.message });
+    res
+      .status(500)
+      .json({ message: "Error adding slider ", error: error.message });
   }
 };
 

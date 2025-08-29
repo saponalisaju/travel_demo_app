@@ -6,6 +6,8 @@ const { error } = require("console");
 const moment = require("moment");
 const sendEmail = require("../helpers/mail");
 const { query } = require("winston");
+const passport = require("passport");
+const { uploadFile, uploadAddFile } = require("../helpers/uploadCloudFile");
 
 exports.fetchApplication = async (req, res) => {
   const { page = 1, limit = 10, search = "" } = req.query;
@@ -95,27 +97,43 @@ exports.fetchApplicationEnquiry = async (req, res) => {
 };
 
 exports.addApplication = async (req, res) => {
-  const image = req.file?.filename;
-  const path = req.file?.path;
   try {
-    const existingUser = await Application.findOne({ email: req.body.email });
+    const existingUser = await Application.findOne({
+      $or: [{ email: req.body.email }, { passport: req.body.passport }],
+    });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res
+        .status(400)
+        .json({ message: "User with this email or passport already exists" });
     }
 
     if (!req.file || !req.body.email) {
       return res.status(400).json({ message: "File and email are required." });
     }
+    const image = req.file?.path;
+    let secure_url = "";
+    let public_id = "";
+    if (image) {
+      ({ secure_url, public_id } = await uploadFile(
+        image,
+        "travelDemo/application"
+      ));
+    }
     const newApplication = new Application({
       ...req.body,
-      image: image,
-      path: path,
+      image: secure_url,
+      imagePublicId: public_id,
     });
+
     await newApplication.save();
     console.log(newApplication);
     res.status(201).json(newApplication);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error adding application");
+    res.status(500).json({
+      message: "Error adding application. please try again",
+      error: error.message,
+    });
   }
 };
 
@@ -133,30 +151,76 @@ exports.updateApplication = async (req, res) => {
 };
 
 exports.updateApplicationAdd = async (req, res) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-    const file = req.file?.filename;
-    const filePath = req.file?.path;
-
     const existingUser = await Application.findById(id);
     if (!existingUser) {
       return res.status(404).send("Application not found");
     }
 
-    const updatedUser = await Application.findByIdAndUpdate(
+    const files = req.files;
+    const updateFields = {};
+    for (const fileField in files) {
+      const filePath = files[fileField][0].path;
+      const { secure_url, public_id } = await uploadAddFile(
+        filePath,
+        `travelDemo/${fileField}`
+      );
+      updateFields[fileField] = secure_url;
+      updateFields[`${fileField}publicId`] = public_id;
+      if (existingUser[fileField]) {
+        const oldPublicId = deleteFile.publicIdFromUrl(existingUser[fileField]);
+        await deleteFile.deleteFileFromCloudinary(oldPublicId);
+      }
+    }
+
+    const updatedApplication = await Application.findByIdAndUpdate(
       id,
-      { ...req.body, file, filePath },
+      { ...req.body, ...updateFields },
       {
         new: true,
       }
     );
 
-    if (file && existingUser.filePath) {
-      try {
-        await deleteImage(existingUser.filePath);
-      } catch (error) {
-        return res.status(500).send(`Error deleting file: ${error.message}`);
-      }
+    if (!updatedApplication) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+
+    if (existingUser.file0) {
+      await sendEmail.sendEmailApprovedApplication(
+        existingUser.email,
+        existingUser.surname
+      );
+    }
+
+    if (
+      existingUser.file1 ||
+      existingUser.file2 ||
+      existingUser.file3 ||
+      existingUser.file4
+    ) {
+      await sendEmail.sendEmailJobLetter(
+        existingUser.email,
+        existingUser.surname
+      );
+    }
+    if (
+      existingUser.file5 ||
+      existingUser.file6 ||
+      existingUser.file7 ||
+      existingUser.file8
+    ) {
+      await sendEmail.sendEmailLmiAs(existingUser.email, existingUser.surname);
+    }
+
+    if (existingUser.file9 || existingUser.file10) {
+      await sendEmail.sendEmailVisa(existingUser.email, existingUser.surname);
+    }
+    if (existingUser.file11) {
+      await sendEmail.sendEmailWorkPermits(
+        existingUser.email,
+        existingUser.surname
+      );
     }
 
     await updatedUser.save();
