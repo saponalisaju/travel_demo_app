@@ -1,0 +1,289 @@
+:root {
+  --primary-color: burlywood;
+  --secondary-color: rgb(51, 153, 131);
+  --background-color: white;
+  --hover-background-color: rgb(68, 39, 96);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+hr {
+  opacity: 25%;
+}
+
+table {
+  box-shadow: 0 2px 4px 2px rgba(86, 88, 88, 0.2);
+}
+
+.btn_approved {
+  margin: 0.5rem;
+}
+
+.user_manage,
+.add_user {
+  width: 68rem;
+  margin-top: 5rem;
+  padding: 0.5rem 1.5rem 0 0;
+  position: absolute;
+  margin-left: 17rem;
+}
+
+.search_option {
+  width: 100%;
+}
+
+.application_img {
+  width: 180px;
+  height: 180px;
+}
+
+.search-bar {
+  margin-left: auto;
+}
+
+.search_box {
+  width: 100%;
+}
+
+.search_box .input-search {
+  width: 15rem;
+  height: 3.5rem;
+}
+
+/* attachment start */
+.print_component {
+  width: 100%;
+}
+
+.attachment {
+  width: 100%;
+}
+/* attachment end */
+
+/* paginated list css start */
+
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+}
+
+.pagination li {
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.pagination li.active {
+  font-weight: bold;
+}
+
+/* paginated list css end */
+
+@media (max-width: 1400px) {
+  .user_manage,
+  .add_user {
+    width: 68rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .user_manage,
+  .add_user {
+    width: 55rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .user_manage,
+  .add_user {
+    width: 43rem;
+  }
+}
+
+@media (max-width: 810px) {
+  .upload_head {
+    width: 36rem;
+  }
+  .user_manage,
+  .add_user {
+    width: 29rem;
+  }
+  .search-bar {
+    margin-top: 1.5rem;
+  }
+  .search_option {
+    gap: 1rem;
+  }
+  .user_manage_hr {
+    width: 29rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .user_manage,
+  .add_user {
+    width: 29rem;
+    margin-left: 16.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .upload_head {
+    width: 36rem;
+  }
+  .theme_description {
+    flex-direction: column;
+  }
+  .user_manage,
+  .add_user {
+    width: 18rem;
+    padding-top: 1rem;
+  }
+  .search_option {
+    flex-direction: column;
+  }
+
+  .search-bar {
+    margin: 0 0 0 auto;
+  }
+  #search {
+    width: 18rem;
+  }
+
+  #identification {
+    width: 17.2rem;
+  }
+
+  #publish {
+    width: 17rem;
+  }
+
+  .name-details,
+  .identification,
+  .gender_date,
+  .city_birth,
+  .company_duration,
+  .job_title {
+    flex-direction: column;
+  }
+
+  .add_user input,
+  .user_manage_hr {
+    width: 17rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .view_one_head {
+    margin: 0;
+  }
+  .user_manage_head {
+    flex-direction: column;
+  }
+  .user_manage_app {
+    text-align: center;
+  }
+  .add_user,
+  .user_manage {
+    width: 12rem;
+  }
+  .add_user input,
+  .user_manage_hr {
+    width: 12rem;
+  }
+  #publish {
+    width: 12rem;
+  }
+  #identification {
+    width: 12.2rem;
+  }
+  .application_img {
+    width: 160px;
+    height: 160px;
+  }
+  .visa_form,
+  .particulars {
+    width: 12rem;
+  }
+  #sex,
+  #jobTitle {
+    width: 12rem;
+  }
+}
+
+@media (max-width: 412px) {
+  #content,
+  #status,
+  #publish {
+    width: 11rem;
+  }
+
+  .user_manage_head .btn {
+    margin: 0.3rem 1rem;
+  }
+  .user_manage_head {
+    flex-direction: column;
+  }
+  .user_manage_app {
+    text-align: center;
+  }
+  .user_manage,
+  .add_user {
+    width: 12rem;
+    padding-top: 0;
+    margin-left: 12rem;
+  }
+  .add_user input,
+  .user_manage_hr {
+    width: 11rem;
+  }
+  #search {
+    width: 12rem;
+  }
+  #sex,
+  #jobTitle {
+    width: 11rem;
+  }
+
+  #identification {
+    width: 11.2rem;
+  }
+}
+@media (max-width: 360px) {
+  .user_manage,
+  .add_user {
+    width: 12rem;
+    padding-top: 1rem;
+    margin-left: 10rem;
+  }
+
+  .visa_form,
+  .particulars {
+    width: 11rem;
+  }
+
+  .add_user input,
+  .user_manage_hr {
+    width: 11rem;
+  }
+  .search-bar {
+    display: flex;
+    flex-direction: column;
+  }
+  #sex,
+  #jobTitle {
+    width: 11rem;
+  }
+
+  #identification {
+    width: 11rem;
+  }
+}

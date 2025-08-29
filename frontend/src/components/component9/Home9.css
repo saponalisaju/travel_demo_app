@@ -1,0 +1,47 @@
+.nine-one {
+  padding: 2rem 1rem;
+}
+.nine-one-a {
+  padding-bottom: 0.8rem;
+}
+.nine-three img {
+  width: 40rem;
+  padding: 4rem;
+}
+
+@media (max-width: 992px) {
+  .main-nine {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nine-three img {
+    width: 55rem;
+  }
+}
+
+@media (max-width: 810px) {
+  .nine-three img {
+    width: 48rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .nine-three img {
+    width: 35rem;
+  }
+}
+@media (max-width: 412px) {
+  .nine-three img {
+    width: 26rem;
+  }
+  .nine-two {
+    margin-bottom: -6rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .nine-three img {
+    width: 23rem;
+  }
+}

@@ -1,0 +1,39 @@
+.main-three-head h4 {
+  padding-top: 2rem;
+}
+
+.image_1 {
+  padding: 1rem;
+}
+
+.my-image_1 img {
+  width: 18rem;
+  height: 13rem;
+}
+.my-image_2 img {
+  width: 18rem;
+  height: 13rem;
+}
+
+.flag_img1 img {
+  width: 10rem;
+  height: 6rem;
+  margin: 0.5rem;
+  box-shadow: 4px 6px 8px rgb(107, 100, 100);
+}
+
+.main-four h1 {
+  font-weight: 100;
+  padding: 1rem;
+}
+.main-four p {
+  font-weight: bold;
+  padding-bottom: 3rem;
+}
+
+@media (max-width: 576px) {
+  .main-three .image_1 {
+    display: flex;
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,31 @@
+.home-five-a {
+  width: 50%;
+  margin: 1.5rem 0 0 2rem;
+  padding: 1rem;
+}
+.home-five-b {
+  width: 50%;
+  margin: 1.5rem 2rem 0 1rem;
+  padding: 1rem;
+}
+.text-warning {
+  margin: 1rem;
+}
+.home-heading-one,
+.home-five-heading {
+  padding-left: 3rem;
+}
+.home-five-heading .home-heading-two {
+  padding-left: 1rem;
+}
+
+@media (max-width: 412px) {
+  .home_five {
+    display: flex;
+    flex-direction: column;
+    margin: 0 -4rem 0 2rem;
+  }
+}
+
+@media (max-width: 360px) {
+}

@@ -1,0 +1,75 @@
+.content_component_twelve {
+  width: 100%;
+  height: 20rem;
+}
+
+.image_twelve {
+  width: 100%;
+  height: 20rem;
+}
+.content_check {
+  margin: -12rem 7rem;
+  color: white;
+}
+
+.btn_check {
+  padding: 1rem;
+  position: absolute;
+  color: white;
+  transform: translate(77rem, 6rem);
+  cursor: pointer;
+}
+@media (max-width: 1400px) {
+  .btn_check {
+    transform: translate(70rem, 6rem);
+  }
+}
+@media (max-width: 1200px) {
+  .btn_check {
+    transform: translate(60rem, 6rem);
+  }
+}
+
+@media (max-width: 992px) {
+  .btn_check {
+    transform: translate(50rem, 6rem);
+  }
+}
+
+@media (max-width: 810px) {
+  .btn_check {
+    transform: translate(38rem, 6rem);
+  }
+}
+
+@media (max-width: 576px) {
+  .btn_check {
+    transform: translate(24rem, 13rem);
+    padding: 0.7rem;
+  }
+}
+@media (max-width: 480px) {
+  .btn_check {
+    transform: translate(20rem, 11rem);
+    padding: 0.7rem;
+  }
+}
+
+@media (max-width: 412px) {
+  .content_check {
+    margin: -14rem 7rem;
+  }
+  .btn_check {
+    transform: translate(16rem, 14rem);
+    padding: 0.7rem;
+  }
+}
+@media (max-width: 360px) {
+  .content_check {
+    margin: -16rem 6rem;
+  }
+  .btn_check {
+    transform: translate(12rem, 18rem);
+    padding: 0.3rem;
+  }
+}

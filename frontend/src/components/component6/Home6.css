@@ -1,0 +1,16 @@
+.main-six {
+  margin: 1.2rem;
+}
+
+.main-six-one,
+.main-six-two {
+  margin: 1rem;
+  padding: 1rem;
+}
+
+@media (max-width: 360px) {
+  .main-six {
+    display: flex;
+    flex-direction: column;
+  }
+}
