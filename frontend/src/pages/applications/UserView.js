@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Common from "../../layouts/Common";
 import "../../assets/styles/main.css";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import PrintButton from "./PrintButton";
 import api from "./api";
 import apiUrl from "../../secret";
 
@@ -290,7 +289,7 @@ const UserView = () => {
                 </form>
               </div>
               <div className="print_option">
-                <PrintButton apiUrl={apiUrl} formData={formData} />
+                <print apiUrl={apiUrl} formData={formData} />
               </div>
             </div>
 
