@@ -1,5 +1,7 @@
 const cloudinary = require("../config/cloudinary");
 
+console.log("hi", cloudinary);
+
 const publicIdFromUrl = (secureUrl) => {
   const pathSegments = secureUrl.split("travelDemo/");
   const lastSegment = pathSegments[pathSegments.length - 1];
