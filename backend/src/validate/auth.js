@@ -18,11 +18,7 @@ exports.validateUserRegister = [
   body("password")
     .trim()
     .notEmpty()
-    .withMessage("Password is required. Enter your password")
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)
-    .withMessage(
-      "Minimum eight characters, at least one uppercase letter, one lowercase letter and one number:"
-    ),
+    .withMessage("Password is required. Enter your password"),
 ];
 exports.validateUserLogin = [
   body("email")
@@ -35,9 +31,5 @@ exports.validateUserLogin = [
   body("password")
     .trim()
     .notEmpty()
-    .withMessage("Password is required. Enter your password")
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)
-    .withMessage(
-      "Minimum eight characters, at least one uppercase letter, one lowercase letter and one number:"
-    ),
+    .withMessage("Password is required. Enter your password"),
 ];

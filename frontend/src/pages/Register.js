@@ -15,13 +15,6 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isValidEmail = emailRegex.test(email);
-
-    if (!isValidEmail) {
-      setError("Please enter a valid email address");
-      return;
-    }
 
     if (!name || !email || !password) {
       setError("All fields are required");
@@ -49,9 +42,6 @@ const Register = () => {
           error.response.data
         );
         setError(`Error: User all ready exists. Please sign in.`); //${error.response.data.message}
-      } else if (error.request) {
-        console.error("No response received:", error.request);
-        setError("No response from server. Please try again.");
       } else {
         console.error("Error setting up the request:", error.message);
         setError("An error occurred during registration. Please try again.");
