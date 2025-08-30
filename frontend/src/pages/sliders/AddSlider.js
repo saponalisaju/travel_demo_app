@@ -25,6 +25,7 @@ const AddSlider = () => {
       formData.append("image", image);
     }
     dispatch(addSlider(formData));
+    console.log("Successfully added data");
     navigate("/slider", { replace: true });
   };
 

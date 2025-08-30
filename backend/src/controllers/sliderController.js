@@ -69,7 +69,10 @@ exports.deleteSlider = async (req, res) => {
       return res.status(404).json({ message: "Slider not found" });
     }
 
-    
+    if (slider.image) {
+      const publicId = deleteFile.publicIdFromUrl(slider.image);
+      await deleteFile.deleteFileFromCloudinary(publicId);
+    }
     res.json({ message: "Slider is deleted" });
   } catch (error) {
     console.error("Error deleting slider:", error);
