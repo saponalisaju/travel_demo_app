@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Common from "../../layouts/Common";
 import "../../assets/styles/main.css";
-import api from "./api";
+import api from "../../api";
 
 const ApplicationManagement = () => {
   const [applications, setApplications] = useState([]);

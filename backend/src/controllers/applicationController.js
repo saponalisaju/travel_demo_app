@@ -195,30 +195,20 @@ exports.updateApplicationAdd = async (req, res) => {
       );
     }
 
-    if (
-      existingUser.file1 ||
-      existingUser.file2 ||
-      existingUser.file3 ||
-      existingUser.file4
-    ) {
+    if (existingUser.file1) {
       await sendEmail.sendEmailJobLetter(
         existingUser.email,
         existingUser.surname
       );
     }
-    if (
-      existingUser.file5 ||
-      existingUser.file6 ||
-      existingUser.file7 ||
-      existingUser.file8
-    ) {
+    if (existingUser.file2) {
       await sendEmail.sendEmailLmiAs(existingUser.email, existingUser.surname);
     }
 
-    if (existingUser.file9 || existingUser.file10) {
+    if (existingUser.file3 || existingUser.file4) {
       await sendEmail.sendEmailVisa(existingUser.email, existingUser.surname);
     }
-    if (existingUser.file11) {
+    if (existingUser.file5) {
       await sendEmail.sendEmailWorkPermits(
         existingUser.email,
         existingUser.surname

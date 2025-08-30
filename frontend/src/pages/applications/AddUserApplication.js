@@ -1,10 +1,244 @@
+// import React, { useState } from "react";
+// import Common from "../../layouts/Common";
+// import { useNavigate } from "react-router-dom";
+// import "../../assets/styles/main.css";
+// import apiUrl from "../../secret";
+// import axios from "axios";
+// import FormField from "./FormField";
+// import { validateField } from "../../utils/validateField";
+// import { useApplications } from "../../hooks/useApplications";
+// import { handleImageUpload } from "../../utils/handleImageUpload";
+
+// const AddUserApplication = () => {
+//   const initialFormData = {
+//     surname: "",
+//     givenN: "",
+//     email: "",
+//     phone: "",
+//     nationalId: "",
+//     sex: "",
+//     dob: "",
+//     birthCity: "",
+//     currentN: "",
+//     identification: "",
+//     company: "",
+//     dutyDuration: "8 Hours",
+//     jobTitle: "",
+//     salary: "",
+//     image: null,
+//     passport: "",
+//     issuedCountry: "",
+//   };
+//   const [formData, setFormData] = useState(initialFormData);
+//   const [imagePreview, setImagePreview] = useState(null);
+//   const navigate = useNavigate();
+//   const { applications, error, loading, setError, setLoading } =
+//     useApplications();
+
+//   const onChangeHandler = (e) => {
+//     const { name, value, type, files } = e.target;
+//     type === "file"
+//       ? handleImageUpload(files[0], setError, setFormData, setImagePreview)
+//       : setFormData((prev) => ({ ...prev, [name]: value }));
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setError("");
+//     setLoading(true);
+
+//     const requiredFields = [
+//       "surname",
+//       "givenN",
+//       "email",
+//       "phone",
+//       "nationalId",
+//       "sex",
+//       "dob",
+//       "birthCity",
+//       "currentN",
+//       "identification",
+//       "company",
+//       "dutyDuration",
+//       "jobTitle",
+//       "salary",
+//       "passport",
+//       "issuedCountry",
+//     ];
+
+//     for (const field of requiredFields) {
+//       const errorMsg = validateField(field, formData[field]);
+//       if (errorMsg) {
+//         setError(errorMsg);
+//         setLoading(false);
+//         return;
+//       }
+//     }
+
+//     if (applications.some((u) => u.email === formData.email)) {
+//       setError("User email already exists. Please try another email.");
+//       setLoading(false);
+//       return;
+//     }
+
+//     if (applications.some((u) => u.passport === formData.passport)) {
+//       setError("User passport already exists. Please try another passport.");
+//       setLoading(false);
+//       return;
+//     }
+
+//     try {
+//       const formDataToSend = new FormData();
+//       requiredFields.forEach((field) => {
+//         const value = formData[field].trim();
+//         formDataToSend.append(
+//           field,
+//           field === "currentN" ? value.toUpperCase() : value
+//         );
+//       });
+
+//       Object.entries(formData).forEach(([key, val]) => {
+//         if (!requiredFields.includes(key) && val !== "" && val !== null) {
+//           formDataToSend.append(key, val);
+//         }
+//       });
+
+//       if (formData.image) {
+//         formDataToSend.append("image", formData.image);
+//       }
+
+//       const response = await axios.post(
+//         `${apiUrl}/api/application/addApplication`,
+//         formDataToSend,
+//         {
+//           headers: { "Content-Type": "multipart/form-data" },
+//           timeout: 20000,
+//         }
+//       );
+
+//       if (response?.status === 201) {
+//         setFormData(Object.fromEntries(requiredFields.map((f) => [f, ""])));
+//         setFormData((prev) => ({ ...prev, image: null }));
+//         navigate("/application", { replace: true });
+//         setError("");
+//       } else {
+//         setError(
+//           `Failed to add application. Server responded with status: ${response.status}`
+//         );
+//       }
+//     } catch (error) {
+//       console.error("Error adding application:", error);
+//       setError("Error adding application. Please try again.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const fields = [
+//     { label: "Surname", name: "surname" },
+//     { label: "Given Name", name: "givenN" },
+//     { label: "Email", name: "email" },
+//     { label: "Phone", name: "phone" },
+//     { label: "National Id", name: "nationalId" },
+//     { label: "Sex", name: "sex", type: "select", options: ["Male", "Female"] },
+//     { label: "Date of Birth", name: "dob", type: "date" },
+//     { label: "Birth City", name: "birthCity" },
+//     { label: "Current Nationality", name: "currentN" },
+//     { label: "Identification", name: "identification" },
+//     { label: "Company", name: "company" },
+//     { label: "Duty Duration", name: "dutyDuration" },
+//     {
+//       label: "Job Title",
+//       name: "jobTitle",
+//       type: "select",
+//       options: [
+//         "Driving",
+//         "Packing",
+//         "Construction",
+//         "Electrician",
+//         "Holder",
+//         "Housekeeping",
+//         "Cleaner",
+//         "Plumber",
+//         "Packaging",
+//         "Cook",
+//         "Restaurant",
+//         "Manager",
+//         "Supervisor",
+//         "Worker",
+//         "Caring Operator",
+//       ],
+//     },
+//     { label: "Salary", name: "salary" },
+//     {
+//       label: "Image",
+//       name: "image",
+//       type: "file",
+//       accept: "image/*",
+//       preview: imagePreview,
+//       className: "edit-file",
+//     },
+
+//     { label: "Passport", name: "passport" },
+//     {
+//       label: "Issued Country",
+//       name: "issuedCountry",
+//     },
+//   ];
+
+//   return (
+//     <>
+//       <div id="navbar-example2">
+//         <Common />
+//       </div>
+//       <main
+//         data-bs-spy="scroll"
+//         data-bs-target="#navbar-example2"
+//         data-bs-offset="0"
+//         className="scrollspy-example add_user me-5"
+//         tabIndex="0"
+//         style={{ overflowY: "scroll", maxHeight: "100vh" }}
+//       >
+//         <h2 className="visa_form">Visa Application Form</h2>
+//         <p className="particulars">Personal Particulars</p>
+//         <hr className="user_application_hr " />
+//         <form
+//           onSubmit={handleSubmit}
+//           className="me-5 absolute "
+//           encType="multipart/form-data"
+//         >
+//           <div className="name-details d-flex flex-wrap">
+//             {fields.map((field) => (
+//               <FormField
+//                 key={field.name}
+//                 {...field}
+//                 value={formData[field.name]}
+//                 onChange={onChangeHandler}
+//                 required
+//               />
+//             ))}
+
+//             {error && <span style={{ color: "red" }}>{error}</span>}
+//           </div>
+//           <button type="submit" className="btn btn-primary mb-2">
+//             {loading ? "Submitting..." : "Submit"}
+//           </button>
+//         </form>
+//       </main>
+//     </>
+//   );
+// };
+
+// export default AddUserApplication;
+
 import React, { useEffect, useState } from "react";
 import Common from "../../layouts/Common";
 import { useNavigate } from "react-router-dom";
 import "../../assets/styles/main.css";
-import api from "./api";
+
 import apiUrl from "../../secret";
 import axios from "axios";
+import api from "../../api";
 
 const AddUserApplication = () => {
   const [applications, setApplications] = useState([]);

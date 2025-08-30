@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import Common from "../../layouts/Common";
 import "../../assets/styles/main.css";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import api from "./api";
 import apiUrl from "../../secret";
+import api from "../../api";
 
 const UserView = () => {
   const [error, setError] = useState("");

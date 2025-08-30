@@ -69,13 +69,7 @@ exports.deleteSlider = async (req, res) => {
       return res.status(404).json({ message: "Slider not found" });
     }
 
-    if (slider.path) {
-      try {
-        await deleteFile(slider.path);
-      } catch (error) {
-        console.error("Error deleting image:", error);
-      }
-    }
+    
     res.json({ message: "Slider is deleted" });
   } catch (error) {
     console.error("Error deleting slider:", error);

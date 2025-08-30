@@ -5,24 +5,24 @@ const ALLOWED_FILE_TYPES = ["image/jpg", "image/png", "image/jpeg"];
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 const sliderStorage = multer.diskStorage({
-  filename: (req, res, cb) => {
+  filename: (req, file, cb) => {
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
 const applicationStorage = multer.diskStorage({
-  filename: (req, res, cb) => {
+  filename: (req, file, cb) => {
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
 const applicationAddStorage = multer.diskStorage({
-  filename: (req, res, cb) => {
+  filename: (req, file, cb) => {
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
-const fileFilter = (req, res, cb) => {
+const fileFilter = (req, file, cb) => {
   if (ALLOWED_FILE_TYPES.includes(file.mimetype)) {
     cb(null, true);
   } else {
