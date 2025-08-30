@@ -17,6 +17,7 @@ exports.addSlider = async (req, res) => {
   try {
     const existingUser = await Slider.findOne({ title: req.body.title });
     if (existingUser) {
+      console.error("User with this title already exists");
       return res
         .status(400)
         .json({ message: "User with this title already exists" });
