@@ -15,6 +15,13 @@ exports.fetchSlider = async (req, res) => {
 };
 exports.addSlider = async (req, res) => {
   try {
+    const existingUser = await Slider.findOne({ title: req.body.title });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ message: "User with this title already exists" });
+    }
+
     if (!req.file || !req.body.title) {
       return res.status(400).json({ message: "Image and title are required" });
     }
