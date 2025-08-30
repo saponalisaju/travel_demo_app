@@ -130,7 +130,7 @@ const DesignationManagement = () => {
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
             disabled={page === 1}
           >
-            Previous
+            Prev
           </button>
 
           <span className="page-link">

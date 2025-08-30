@@ -1,4 +1,4 @@
-// import React, { useState } from "react";
+// import React, { useEffect, useState } from "react";
 // import Common from "../../layouts/Common";
 // import { useNavigate } from "react-router-dom";
 // import "../../assets/styles/main.css";
@@ -6,10 +6,32 @@
 // import axios from "axios";
 // import FormField from "./FormField";
 // import { validateField } from "../../utils/validateField";
-// import { useApplications } from "../../hooks/useApplications";
 // import { handleImageUpload } from "../../utils/handleImageUpload";
+// import api from "../../api";
 
 // const AddUserApplication = () => {
+//   const [applications, setApplications] = useState([]);
+//   const [error, setError] = useState("");
+//   const [loading, setLoading] = useState(false);
+
+//   useEffect(() => {
+//     const fetchUsers = async () => {
+//       setError("");
+//       setLoading(true);
+//       try {
+//         const response = await api.get(`/fetchApplication`, { timeout: 5000 });
+//         setApplications(response.data.applications || []);
+//       } catch (err) {
+//         console.error("Error fetching applications:", err);
+//         setError("Error fetching applications. Please try again.");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchUsers();
+//   }, []);
+
 //   const initialFormData = {
 //     surname: "",
 //     givenN: "",
@@ -32,8 +54,6 @@
 //   const [formData, setFormData] = useState(initialFormData);
 //   const [imagePreview, setImagePreview] = useState(null);
 //   const navigate = useNavigate();
-//   const { applications, error, loading, setError, setLoading } =
-//     useApplications();
 
 //   const onChangeHandler = (e) => {
 //     const { name, value, type, files } = e.target;
@@ -137,14 +157,18 @@
 //   const fields = [
 //     { label: "Surname", name: "surname" },
 //     { label: "Given Name", name: "givenN" },
-//     { label: "Email", name: "email" },
+//     { label: "Email", name: "email", className: "w-100" },
 //     { label: "Phone", name: "phone" },
 //     { label: "National Id", name: "nationalId" },
 //     { label: "Sex", name: "sex", type: "select", options: ["Male", "Female"] },
 //     { label: "Date of Birth", name: "dob", type: "date" },
 //     { label: "Birth City", name: "birthCity" },
 //     { label: "Current Nationality", name: "currentN" },
-//     { label: "Identification", name: "identification" },
+//     {
+//       label: "Identification",
+//       name: "identification",
+//       className: "w-100",
+//     },
 //     { label: "Company", name: "company" },
 //     { label: "Duty Duration", name: "dutyDuration" },
 //     {
@@ -176,13 +200,14 @@
 //       type: "file",
 //       accept: "image/*",
 //       preview: imagePreview,
-//       className: "edit-file",
+//       className: "edit-file w-100",
 //     },
 
-//     { label: "Passport", name: "passport" },
+//     { label: "Passport", name: "passport", className: "w-100" },
 //     {
 //       label: "Issued Country",
 //       name: "issuedCountry",
+//       className: "w-100",
 //     },
 //   ];
 
@@ -235,10 +260,9 @@ import React, { useEffect, useState } from "react";
 import Common from "../../layouts/Common";
 import { useNavigate } from "react-router-dom";
 import "../../assets/styles/main.css";
-
+import api from "./api";
 import apiUrl from "../../secret";
 import axios from "axios";
-import api from "../../api";
 
 const AddUserApplication = () => {
   const [applications, setApplications] = useState([]);
