@@ -260,9 +260,10 @@ import React, { useEffect, useState } from "react";
 import Common from "../../layouts/Common";
 import { useNavigate } from "react-router-dom";
 import "../../assets/styles/main.css";
-import api from "./api";
+
 import apiUrl from "../../secret";
 import axios from "axios";
+import api from "../../api";
 
 const AddUserApplication = () => {
   const [applications, setApplications] = useState([]);
