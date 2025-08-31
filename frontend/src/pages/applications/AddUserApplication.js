@@ -20,6 +20,7 @@ const AddUserApplication = () => {
       setLoading(true);
       try {
         const response = await api.get(`/fetchApplication`, { timeout: 5000 });
+        console.log("Hello ", response);
         setApplications(response.data.applications || []);
       } catch (err) {
         console.error("Error fetching applications:", err);
@@ -36,20 +37,20 @@ const AddUserApplication = () => {
     surname: "",
     givenN: "",
     email: "",
-    // phone: "",
-    // nationalId: "",
-    // sex: "",
-    // dob: "",
-    // birthCity: "",
-    // currentN: "",
-    // identification: "",
-    // company: "",
-    // dutyDuration: "8 Hours",
-    // jobTitle: "",
-    // salary: "",
-    // image: null,
-    // passport: "",
-    // issuedCountry: "",
+    phone: "",
+    nationalId: "",
+    sex: "",
+    dob: "",
+    birthCity: "",
+    currentN: "",
+    identification: "",
+    company: "",
+    dutyDuration: "8 Hours",
+    jobTitle: "",
+    salary: "",
+    image: null,
+    passport: "",
+    issuedCountry: "",
   };
   const [formData, setFormData] = useState(initialFormData);
   const [imagePreview, setImagePreview] = useState(null);
@@ -71,19 +72,19 @@ const AddUserApplication = () => {
       "surname",
       "givenN",
       "email",
-      // "phone",
-      // "nationalId",
-      // "sex",
-      // "dob",
-      // "birthCity",
-      // "currentN",
-      // "identification",
-      // "company",
-      // "dutyDuration",
-      // "jobTitle",
-      // "salary",
-      // "passport",
-      // "issuedCountry",
+      "phone",
+      "nationalId",
+      "sex",
+      "dob",
+      "birthCity",
+      "currentN",
+      "identification",
+      "company",
+      "dutyDuration",
+      "jobTitle",
+      "salary",
+      "passport",
+      "issuedCountry",
     ];
 
     for (const field of requiredFields) {
