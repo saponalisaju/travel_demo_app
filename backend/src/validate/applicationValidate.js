@@ -5,15 +5,15 @@ exports.applicationValidate = [
     .trim()
     .notEmpty()
     .withMessage("Surname is required. Enter your fullname")
-    .isLength({ min: 4, max: 31 })
-    .withMessage("Name should be at least 4-24 character long"),
+    .isLength({ min: 3, max: 31 })
+    .withMessage("Name should be at least 3-24 character long"),
 
   body("givenN")
     .trim()
     .notEmpty()
     .withMessage("Given Name is required. Enter your fullname")
-    .isLength({ min: 4, max: 31 })
-    .withMessage("Name should be at least 4-24 character long"),
+    .isLength({ min: 3, max: 31 })
+    .withMessage("Name should be at least 3-24 character long"),
 
   body("email")
     .trim()
@@ -58,6 +58,14 @@ exports.applicationValidate = [
     })
     .withMessage("User image is required"),
 
+  body("file0")
+    .optional()
+    .custom((value, { req }) => {
+      if (!req.file) {
+        throw new Error("User file is required");
+      }
+      return true;
+    }),
   body("file1")
     .optional()
     .custom((value, { req }) => {

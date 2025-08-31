@@ -1,8 +1,9 @@
 const multer = require("multer");
+const fs = require("fs");
 const cloudinary = require("../config/cloudinary");
 
-const ALLOWED_FILE_TYPES = ["image/jpg", "image/png", "image/jpeg"];
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 const sliderStorage = multer.diskStorage({
   filename: (req, file, cb) => {
@@ -42,42 +43,55 @@ const uploadApplication = multer({
   fileFilter: fileFilter,
 });
 
-const uploadAddApplication = multer({
+const uploadApplicationAdd = multer({
   storage: applicationAddStorage,
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: fileFilter,
 });
 
-const uploadFile = async (image, folder) => {
+const uploadApplicationAddFile = async (filePath, folder) => {
   try {
-    const response = await cloudinary.uploader.upload(image, {
+    const result = await cloudinary.uploader.upload(filePath, {
       folder: folder,
     });
-    console.log("File upload to cloudinary successfully");
-    return { secure_url: response.secure_url, public_id: response.public_id };
+    return { secure_url: result.secure_url, public_id: result.public_id };
   } catch (error) {
-    console.error("Error uploading file", error);
-    throw error;
-  }
-};
-
-const uploadAddFile = async (filePath, folder) => {
-  try {
-    const response = await cloudinary.uploader.upload(filePath, {
-      folder: folder,
-    });
-    console.log("File upload to cloudinary successfully");
-    return { secure_url: response.secure_url, public_id: response.public_id };
-  } catch (error) {
-    console.error("Error uploading file", error);
+    console.error("Error uploading file to Cloudinary:", error);
     return { secure_url: "default.png", public_id: "" };
   }
 };
 
+const uploadSliderFile = async (image, folder) => {
+  try {
+    const response = await cloudinary.uploader.upload(image, {
+      folder: folder,
+    });
+    console.log("File uploaded successfully to cloudinary");
+    return { secure_url: response.secure_url, public_id: response.public_id };
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    throw error;
+  }
+};
+
+const uploadApplicationFile = async (image, folder) => {
+  try {
+    const response = await cloudinary.uploader.upload(image, {
+      folder: folder,
+    });
+    console.log("File uploaded successfully to cloudinary");
+    return { secure_url: response.secure_url, public_id: response.public_id };
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    throw error;
+  }
+};
+
 module.exports = {
-  uploadFile,
-  uploadAddFile,
   uploadSlider,
   uploadApplication,
-  uploadAddApplication,
+  uploadApplicationAdd,
+  uploadApplicationAddFile,
+  uploadApplicationFile,
+  uploadSliderFile,
 };

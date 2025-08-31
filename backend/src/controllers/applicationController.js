@@ -1,6 +1,10 @@
 const Application = require("../models/applicationModel");
 const moment = require("moment");
-
+const { uploadApplicationFile } = require("../helpers/uploadCloudFile");
+const {
+  publicIdFromUrl,
+  deleteFileFromCloudinary,
+} = require("../helpers/deleteFileFromCloudinary");
 const {
   sendEmailJobLetter,
   sendEmailLmiAs,
@@ -9,7 +13,6 @@ const {
   sendEmailWorkPermits,
   sendEmailApprovedApplication,
 } = require("../helpers/mail");
-const { uploadFile } = require("../helpers/uploadCloudFile");
 
 exports.fetchApplication = async (req, res) => {
   const { page = 1, limit = 10, search = "" } = req.query;
@@ -118,9 +121,9 @@ exports.addApplication = async (req, res) => {
     let secure_url = "default.png";
     let public_id = "";
     if (image) {
-      ({ secure_url, public_id } = await uploadFile(
+      ({ secure_url, public_id } = await uploadApplicationFile(
         image,
-        "travelDemo/application"
+        "travelAppLocal/application"
       ));
     }
     const newApplication = new Application({
@@ -150,9 +153,9 @@ exports.updateApplication = async (req, res) => {
     const image = req.file?.path;
     const updateField = {};
     if (image) {
-      const { secure_url, public_id } = await uploadFile(
+      const { secure_url, public_id } = await uploadApplicationFile(
         image,
-        "travelDemo/application"
+        "travelAppLocal/application"
       );
       updateField.image = secure_url;
       updateField.imagePublicId = public_id;
@@ -183,14 +186,13 @@ exports.updateApplicationAdd = async (req, res) => {
     if (!existingUser) {
       return res.status(404).json({ message: "Application not found" });
     }
-
     const files = req.files;
     const updateFields = {};
     for (const fileField in files) {
       const filePath = files[fileField][0].path;
-      const { secure_url, public_id } = await uploadFile(
+      const { secure_url, public_id } = await uploadApplicationFile(
         filePath,
-        `travelDemo/${fileField}`
+        `travelAppLocal/${fileField}`
       );
       updateFields[fileField] = secure_url;
       updateFields[`${fileField}PublicId`] = public_id;
@@ -214,17 +216,27 @@ exports.updateApplicationAdd = async (req, res) => {
       );
     }
 
-    if (existingUser.file1) {
+    if (
+      existingUser.file1 ||
+      existingUser.file2 ||
+      existingUser.file3 ||
+      existingUser.file4
+    ) {
       await sendEmailJobLetter(existingUser.email, existingUser.surname);
     }
-    if (existingUser.file2) {
+    if (
+      existingUser.file5 ||
+      existingUser.file6 ||
+      existingUser.file7 ||
+      existingUser.file8
+    ) {
       await sendEmailLmiAs(existingUser.email, existingUser.surname);
     }
 
-    if (existingUser.file3 || existingUser.file4) {
+    if (existingUser.file9 || existingUser.file10) {
       await sendEmailVisa(existingUser.email, existingUser.surname);
     }
-    if (existingUser.file5) {
+    if (existingUser.file11) {
       await sendEmailWorkPermits(existingUser.email, existingUser.surname);
     }
 
@@ -314,13 +326,6 @@ exports.deleteApplication = async (req, res) => {
       application.file3PublicId,
       application.file4PublicId,
       application.file5PublicId,
-      application.file6PublicId,
-      application.file7PublicId,
-      application.file8PublicId,
-      application.file9PublicId,
-      application.file10PublicId,
-      application.file11PublicId,
-      application.file12PublicId,
     ].filter(Boolean); // Filter out any undefined values
 
     if (filePublicIds.length > 0) {
