@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "../../assets/styles/main.css";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import logo_p from "../../assets/images/avatar.png";
-import logo_q from "../../assets/images/avatar.png";
+// import logo_p from "../../assets/images/avatar.png";
+// import logo_q from "../../assets/images/avatar.png";
 import moment from "moment";
 import api from "../../api";
 
@@ -334,8 +334,8 @@ const UserView = () => {
               ) : (
                 <p>No image available</p>
               )}
-              <img className="logo_p " src={logo_p} alt="flag" />
-              <img className="logo_q" src={logo_q} alt="brand-logo" />
+              {/* <img className="logo_p " src={logo_p} alt="flag" />
+              <img className="logo_q" src={logo_q} alt="brand-logo" /> */}
             </div>
             <div className="background_user_view">
               <div className="border border-2 view_one back_view_user mb-2">
