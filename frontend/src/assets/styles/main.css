@@ -36,7 +36,7 @@ hr {
   margin-left: auto;
 }
 .view_one_top {
-  background-image: url("../images/logo2.png");
+  /* background-image: url("../images/logo2.png"); */
   background-repeat: no-repeat;
   background-position: center;
 
@@ -54,7 +54,7 @@ hr {
   padding: 0 1rem;
 }
 .background_user_view {
-  background-image: url("../images/logo2.png");
+  /* background-image: url("../images/logo2.png"); */
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
