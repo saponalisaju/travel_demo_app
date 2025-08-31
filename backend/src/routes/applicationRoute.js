@@ -60,12 +60,6 @@ router.put(
   applicationController.updateApplicationReject
 );
 
-router.put(
-  "/updateApplicationView/:id",
-  uploadApplication.single("file"),
-  applicationController.updateApplicationView
-);
-
 router.delete(
   "/deleteApplication/:id",
   applicationController.deleteApplication

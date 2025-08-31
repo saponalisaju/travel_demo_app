@@ -285,6 +285,8 @@ const AddUserApplication = () => {
           issuedCountry: "",
         });
 
+        console.log(response, "Insert data successfully");
+
         navigate("/application", { replace: true });
         setError("");
       } else {

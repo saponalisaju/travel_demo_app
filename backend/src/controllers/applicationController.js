@@ -1,13 +1,18 @@
-const fs = require("fs");
-const path = require("path");
-const deleteFile = require("../helpers/deleteFileFromCloudinary");
 const Application = require("../models/applicationModel");
-const { error } = require("console");
 const moment = require("moment");
-const sendEmail = require("../helpers/mail");
-const { query } = require("winston");
-const passport = require("passport");
-const { uploadFile, uploadAddFile } = require("../helpers/uploadCloudFile");
+const { uploadApplicationFile } = require("../helpers/uploadCloudFile");
+const {
+  publicIdFromUrl,
+  deleteFileFromCloudinary,
+} = require("../helpers/deleteFileCloudinary");
+const {
+  sendEmailJobLetter,
+  sendEmailLmiAs,
+  sendEmailVisa,
+  sendEmailApplicationApproved,
+  sendEmailWorkPermits,
+  sendEmailApprovedApplication,
+} = require("../helpers/mail");
 
 exports.fetchApplication = async (req, res) => {
   const { page = 1, limit = 10, search = "" } = req.query;
@@ -65,18 +70,17 @@ exports.fetchApplicationEnquiry = async (req, res) => {
     search2 = "",
   } = req.query;
 
-  const startDay = new Date(search2);
-  startDay.setHours(0, 0, 0, 0);
-
-  const endDay = new Date(search2);
-  endDay.setHours(23, 59, 59, 999);
-
+  const startOfDay = new Date(search2);
+  startOfDay.setHours(0, 0, 0, 0);
+  const endOfDay = new Date(search2);
+  endOfDay.setHours(23, 59, 59, 999);
   try {
     const query = {
       passport: { $regex: search, $options: "i" },
       currentN: { $regex: search1, $options: "i" },
-      dob: { $gte: startDay, $lte: endDay },
+      dob: { $gte: startOfDay, $lte: endOfDay },
     };
+
     const applications = await Application.find(query)
       .limit(limit * 1)
       .skip((page - 1) * limit)
@@ -106,19 +110,20 @@ exports.addApplication = async (req, res) => {
     if (existingUser) {
       return res
         .status(400)
-        .json({ message: "User with this email or passport already exists" });
+        .json({ message: "User with this email or passport already exists." });
     }
-
     if (!req.file || !req.body.email) {
-      return res.status(400).json({ message: "File and email are required." });
+      return res
+        .status(400)
+        .json({ message: "Both file and email are required." });
     }
     const image = req.file?.path;
-    let secure_url = "";
+    let secure_url = "default.png";
     let public_id = "";
     if (image) {
-      ({ secure_url, public_id } = await uploadFile(
+      ({ secure_url, public_id } = await uploadApplicationFile(
         image,
-        "travelDemo/application"
+        "travelAppLocal/application"
       ));
     }
     const newApplication = new Application({
@@ -126,14 +131,13 @@ exports.addApplication = async (req, res) => {
       image: secure_url,
       imagePublicId: public_id,
     });
-
     await newApplication.save();
     console.log(newApplication);
     res.status(201).json(newApplication);
   } catch (error) {
-    console.error("Error adding application");
+    console.error("Error adding application:", error);
     res.status(500).json({
-      message: "Error adding application. please try again",
+      message: "Error adding application. Please try again.",
       error: error.message,
     });
   }
@@ -142,9 +146,32 @@ exports.addApplication = async (req, res) => {
 exports.updateApplication = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedUser = await Application.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const existingUser = await Application.findById(id);
+    if (!existingUser) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+    const image = req.file?.path;
+    const updateField = {};
+    if (image) {
+      const { secure_url, public_id } = await uploadApplicationFile(
+        image,
+        "travelAppLocal/application"
+      );
+      updateField.image = secure_url;
+      updateField.imagePublicId = public_id;
+
+      if (existingUser.image) {
+        const publicId = publicIdFromUrl(existingUser.image);
+        await deleteFileFromCloudinary(publicId);
+      }
+    }
+    const updatedUser = await Application.findByIdAndUpdate(
+      id,
+      { ...req.body, ...updateField },
+      {
+        new: true,
+      }
+    );
     await updatedUser.save();
     res.json(updatedUser);
   } catch (error) {
@@ -153,72 +180,70 @@ exports.updateApplication = async (req, res) => {
 };
 
 exports.updateApplicationAdd = async (req, res) => {
-  const { id } = req.params;
   try {
+    const { id } = req.params;
     const existingUser = await Application.findById(id);
     if (!existingUser) {
-      return res.status(404).send("Application not found");
+      return res.status(404).json({ message: "Application not found" });
     }
-
     const files = req.files;
     const updateFields = {};
     for (const fileField in files) {
       const filePath = files[fileField][0].path;
-      const { secure_url, public_id } = await uploadAddFile(
+      const { secure_url, public_id } = await uploadApplicationFile(
         filePath,
-        `travelDemo/${fileField}`
+        `travelAppLocal/${fileField}`
       );
       updateFields[fileField] = secure_url;
-      updateFields[`${fileField}publicId`] = public_id;
+      updateFields[`${fileField}PublicId`] = public_id;
       if (existingUser[fileField]) {
-        const oldPublicId = deleteFile.publicIdFromUrl(existingUser[fileField]);
-        await deleteFile.deleteFileFromCloudinary(oldPublicId);
+        const oldPublicId = publicIdFromUrl(existingUser[fileField]);
+        await deleteFileFromCloudinary(oldPublicId);
       }
     }
-
     const updatedApplication = await Application.findByIdAndUpdate(
       id,
       { ...req.body, ...updateFields },
-      {
-        new: true,
-      }
+      { new: true }
     );
-
     if (!updatedApplication) {
       return res.status(404).json({ message: "Application not found" });
     }
-
     if (existingUser.file0) {
-      await sendEmail.sendEmailApprovedApplication(
+      await sendEmailApprovedApplication(
         existingUser.email,
         existingUser.surname
       );
     }
 
-    if (existingUser.file1) {
-      await sendEmail.sendEmailJobLetter(
-        existingUser.email,
-        existingUser.surname
-      );
+    if (
+      existingUser.file1 ||
+      existingUser.file2 ||
+      existingUser.file3 ||
+      existingUser.file4
+    ) {
+      await sendEmailJobLetter(existingUser.email, existingUser.surname);
     }
-    if (existingUser.file2) {
-      await sendEmail.sendEmailLmiAs(existingUser.email, existingUser.surname);
-    }
-
-    if (existingUser.file3 || existingUser.file4) {
-      await sendEmail.sendEmailVisa(existingUser.email, existingUser.surname);
-    }
-    if (existingUser.file5) {
-      await sendEmail.sendEmailWorkPermits(
-        existingUser.email,
-        existingUser.surname
-      );
+    if (
+      existingUser.file5 ||
+      existingUser.file6 ||
+      existingUser.file7 ||
+      existingUser.file8
+    ) {
+      await sendEmailLmiAs(existingUser.email, existingUser.surname);
     }
 
-    await updatedUser.save();
-    res.json(updatedUser);
+    if (existingUser.file9 || existingUser.file10) {
+      await sendEmailVisa(existingUser.email, existingUser.surname);
+    }
+    if (existingUser.file11) {
+      await sendEmailWorkPermits(existingUser.email, existingUser.surname);
+    }
+
+    res.status(200).json(updatedApplication);
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error("Error updating application:", error);
+    res.status(500).send(`Server Error: ${error.message}`);
   }
 };
 
@@ -234,7 +259,7 @@ exports.updateApplicationApprove = async (req, res) => {
         { new: true }
       );
 
-      sendEmail(appUser.email, appUser.surname);
+      await sendEmailApplicationApproved(appUser.email, appUser.surname);
 
       res.json(updatedUser);
     } else {
@@ -251,11 +276,17 @@ exports.updateApplicationPending = async (req, res) => {
     const updatedUser = await Application.findByIdAndUpdate(
       id,
       req.body,
-      { isStatus: "pending" },
+      { isStatus: "pending" }, // Ensure the status is set correctly if needed
       { new: true }
     );
+
+    if (!updatedUser) {
+      return res.status(404).send("User not found.");
+    }
+
     res.json(updatedUser);
   } catch (error) {
+    console.error("Error updating application:", error);
     res.status(500).send(error.message);
   }
 };
@@ -279,28 +310,6 @@ exports.updateApplicationReject = async (req, res) => {
   }
 };
 
-exports.updateApplicationView = async (req, res) => {
-  const { id } = req.params;
-  const file = req.file?.filename;
-  const filePath = req.file?.path;
-
-  try {
-    if (!id) {
-      throw new Error("No ID provided");
-    }
-
-    const updatedUser = await Application.findByIdAndUpdate(
-      id,
-      { ...req.body, file: file, filePath: filePath },
-      { new: true }
-    );
-    console.log("hello", updatedUser);
-    res.json(updatedUser);
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-};
-
 exports.deleteApplication = async (req, res) => {
   const { id } = req.params;
   try {
@@ -308,12 +317,35 @@ exports.deleteApplication = async (req, res) => {
     if (!application) {
       return res.status(404).json({ message: "Application not found" });
     }
-    if (application.path) {
-      await deleteFile(application.path);
-    }
 
-    if (application.filePath) {
-      await deleteFile(application.filePath);
+    const filePublicIds = [
+      application.imagePublicId,
+      application.file0PublicId,
+      application.file1PublicId,
+      application.file2PublicId,
+      application.file3PublicId,
+      application.file4PublicId,
+      application.file5PublicId,
+      application.file6PublicId,
+      application.file7PublicId,
+      application.file8PublicId,
+      application.file9PublicId,
+      application.file10PublicId,
+      application.file11PublicId,
+      application.file12PublicId,
+    ].filter(Boolean); // Filter out any undefined values
+
+    if (filePublicIds.length > 0) {
+      await Promise.all(
+        filePublicIds.map((publicId) =>
+          deleteFileFromCloudinary(publicId).catch((error) => {
+            console.error(
+              `Error deleting file with public_id ${publicId}:`,
+              error
+            );
+          })
+        )
+      );
     }
 
     res.json({ message: "Application deleted" });
