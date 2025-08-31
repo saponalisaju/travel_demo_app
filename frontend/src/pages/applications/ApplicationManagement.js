@@ -43,7 +43,7 @@ const ApplicationManagement = () => {
         const response = await api.delete(`/deleteApplication/${id}`);
         if (response.status === 200) {
           const updatedResponse = await api.get(`/fetchApplication`, {
-            params: { page, limit: 5, search },
+            params: { page, limit: 10, search },
           });
           setApplications(updatedResponse.data.applications);
           setTotalPages(updatedResponse.data.totalPages);
