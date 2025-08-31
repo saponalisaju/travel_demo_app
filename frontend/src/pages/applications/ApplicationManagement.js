@@ -8,30 +8,42 @@ const ApplicationManagement = () => {
   const [applications, setApplications] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
+      setError("");
+      setLoading(true);
       try {
         const response = await api.get(`/fetchApplication`, {
+          timeout: 10000,
           params: { page, limit: 10, search },
         });
         console.log("hello", response.data.applications);
-        setApplications(response.data.applications);
-        setTotalPages(response.data.totalPages);
+        setApplications(response?.data?.applications || []);
+        setTotalPages(response?.data?.totalPages || 0);
       } catch (error) {
         if (error.response) {
           // The request was made and the server responded with a status code that falls out of the range of 2xx
           console.error("Error response:", error.response.data);
-          console.error("Error status:", error.response.status);
-          console.error("Error headers:", error.response.headers);
+          setError(
+            "Failed to fetch data from the server. Please try again later."
+          );
         } else if (error.request) {
           // The request was made but no response was received
           console.error("Error request:", error.request);
+          setError(
+            "No response from the server. Please check your connection."
+          );
         } else {
           // Something happened in setting up the request that triggered an Error
           console.error("Error message:", error.message);
+          setError("An unexpected error occurred. Please try again.");
         }
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -43,15 +55,19 @@ const ApplicationManagement = () => {
         const response = await api.delete(`/deleteApplication/${id}`);
         if (response.status === 200) {
           const updatedResponse = await api.get(`/fetchApplication`, {
+            timeout: 10000,
             params: { page, limit: 10, search },
           });
-          setApplications(updatedResponse.data.applications);
-          setTotalPages(updatedResponse.data.totalPages);
+          setApplications(updatedResponse?.data?.applications || []);
+          setTotalPages(updatedResponse?.data?.totalPages || 0);
         } else {
-          console.error("Failed to delete designation:", response.data.message);
+          console.error("Failed to delete application");
         }
       } catch (error) {
-        console.error("Error deleting designation:", error);
+        console.error("Error deleting application", error);
+        setError("Error deleting application. Please try again.");
+      } finally {
+        setLoading(false);
       }
     } else {
       console.error("Invalid ID format:", id);
@@ -63,6 +79,8 @@ const ApplicationManagement = () => {
       <div className="example2">
         <Common />
       </div>
+      {loading && <p>Loading...</p>}
+      {error && <p>{error}</p>}
       <main
         data-bs-spy="scroll"
         data-bs-target="#example2"
@@ -121,7 +139,12 @@ const ApplicationManagement = () => {
                 const {
                   _id,
                   image,
-                  file,
+                  file0,
+                  file1,
+                  file2,
+                  file3,
+                  file4,
+                  file5,
                   surname,
                   givenN,
                   sex,
@@ -159,7 +182,12 @@ const ApplicationManagement = () => {
                           state={{
                             _id,
                             image,
-                            file,
+                            file0,
+                            file1,
+                            file2,
+                            file3,
+                            file4,
+                            file5,
                             surname,
                             givenN,
                             sex,
@@ -189,7 +217,12 @@ const ApplicationManagement = () => {
                           state={{
                             _id,
                             image,
-                            file,
+                            file0,
+                            file1,
+                            file2,
+                            file3,
+                            file4,
+                            file5,
                             surname,
                             givenN,
                             sex,
