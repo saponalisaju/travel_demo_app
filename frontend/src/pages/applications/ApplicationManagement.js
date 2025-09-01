@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Common from "../../layouts/Common";
 import "../../assets/styles/main.css";
 import api from "../../api";
+import Spinner from "react-bootstrap/Spinner";
 
 const ApplicationManagement = () => {
   const [applications, setApplications] = useState([]);
@@ -79,8 +80,7 @@ const ApplicationManagement = () => {
       <div className="example2">
         <Common />
       </div>
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
+
       <main
         data-bs-spy="scroll"
         data-bs-target="#example2"
@@ -96,6 +96,12 @@ const ApplicationManagement = () => {
           </Link>
         </div>
         <hr />
+        {loading && (
+          <div className="text-center mt-5">
+            <Spinner animation="border" variant="primary" />
+          </div>
+        )}
+        {error && <p>{error}</p>}
         <div className="d-flex search_box">
           <p>Show 1 to 10 entries</p>
           <input

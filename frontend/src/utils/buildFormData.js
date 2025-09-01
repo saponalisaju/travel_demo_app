@@ -41,14 +41,20 @@ export const buildFormData = (formData) => {
   };
 
   Object.entries(fields).forEach(([key, val]) => {
-    if (val?.trim()) fd.append(key, val.trim());
+    if (val?.trim()) {
+      fd.append(key, val.trim());
+    }
   });
 
   Object.entries(rest).forEach(([key, val]) => {
-    if (val !== "" && val !== null) fd.append(key, val);
+    if (val !== "" && val !== null) {
+      fd.append(key, val);
+    }
   });
 
-  if (image) fd.append("image", image);
+  if (image) {
+    fd.append("image", image);
+  }
 
   return fd;
 };

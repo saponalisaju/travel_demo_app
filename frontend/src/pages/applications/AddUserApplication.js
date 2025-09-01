@@ -5,10 +5,7 @@ import "../../assets/styles/main.css";
 import api from "../../api";
 import apiUrl from "../../secret";
 import axios from "axios";
-import { validateApplication } from "../../utils/validateField";
-import { buildFormData } from "../../utils/buildFormData";
-import FormField from "./FormField";
-import { formSchema } from "../../utils/formSchema";
+import Spinner from "react-bootstrap/Spinner";
 
 const AddUserApplication = () => {
   const [applications, setApplications] = useState([]);
@@ -26,7 +23,7 @@ const AddUserApplication = () => {
     currentN: "",
     identification: "",
     company: "",
-    dutyDuration: "8 Hours",
+    dutyDuration: "",
     jobTitle: "",
     salary: "",
     image: null,
@@ -86,15 +83,178 @@ const AddUserApplication = () => {
     setError("");
     setLoading(true);
 
-    const errorMsg = validateApplication(formData, applications);
-    if (errorMsg) {
-      setError(errorMsg);
+    const {
+      surname,
+      givenN,
+      email,
+      phone,
+      nationalId,
+      sex,
+      dob,
+      birthCity,
+      currentN,
+      identification,
+      company,
+      dutyDuration,
+      jobTitle,
+      salary,
+      passport,
+      issuedCountry,
+      image,
+      ...rest
+    } = formData;
+
+    if (
+      !surname.trim() ||
+      surname.trim().length < 3 ||
+      surname.trim().length > 31
+    ) {
+      setError("Surname must be between 3 and 31 characters long.");
+      setLoading(false);
+      return;
+    }
+
+    if (
+      !givenN.trim() ||
+      givenN.trim().length < 3 ||
+      givenN.trim().length > 31
+    ) {
+      setError("Given name must be between 3 and 31 characters long.");
+      setLoading(false);
+      return;
+    }
+
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+
+    if (!phone.trim() || !/^\d+$/.test(phone)) {
+      setError("Please enter a valid phone number.");
+      setLoading(false);
+      return;
+    }
+
+    if (!nationalId.trim()) {
+      setError("Please enter a valid national ID.");
+      setLoading(false);
+      return;
+    }
+
+    if (!sex.trim()) {
+      setError("Please enter a valid sex.");
+      setLoading(false);
+      return;
+    }
+
+    if (!dob.trim()) {
+      setError("Please enter a valid date of birth.");
+      setLoading(false);
+      return;
+    }
+
+    if (!birthCity.trim()) {
+      setError("Please enter a valid birth city.");
+      setLoading(false);
+      return;
+    }
+
+    if (!currentN.trim()) {
+      setError("Please enter a valid current nationality.");
+      setLoading(false);
+      return;
+    }
+
+    if (!identification.trim()) {
+      setError("Please enter a valid identification.");
+      setLoading(false);
+      return;
+    }
+
+    if (!company.trim()) {
+      setError("Please enter a valid company name.");
+      setLoading(false);
+      return;
+    }
+
+    if (!dutyDuration.trim()) {
+      setError("Please enter a valid duty duration.");
+      setLoading(false);
+      return;
+    }
+
+    if (!jobTitle.trim()) {
+      setError("Please enter a valid job title.");
+      setLoading(false);
+      return;
+    }
+
+    if (!salary.trim()) {
+      setError("Please enter a valid salary.");
+      setLoading(false);
+      return;
+    }
+
+    if (!passport.trim()) {
+      setError("Please enter a valid passport.");
+      setLoading(false);
+      return;
+    }
+
+    if (!issuedCountry.trim()) {
+      setError("Please enter a valid issued country.");
+      setLoading(false);
+      return;
+    }
+
+    const userExistsEmail = applications.some((u) => u.email === email);
+    const userExistsPassport = applications.some(
+      (u) => u.passport === passport
+    );
+
+    if (userExistsEmail) {
+      setError("User email already exists. Please try another email.");
+      setLoading(false);
+      return;
+    }
+
+    if (userExistsPassport) {
+      setError("User passport already exists. Please try another passport.");
       setLoading(false);
       return;
     }
 
     try {
-      const formDataToSend = buildFormData(formData);
+      const formDataToSend = new FormData();
+      formDataToSend.append("surname", surname.trim());
+      formDataToSend.append("givenN", givenN.trim());
+      formDataToSend.append("email", email.trim());
+      formDataToSend.append("phone", phone.trim());
+      formDataToSend.append("nationalId", nationalId.trim());
+      formDataToSend.append("sex", sex.trim());
+      formDataToSend.append("dob", dob.trim());
+      formDataToSend.append("birthCity", birthCity.trim());
+      formDataToSend.append("currentN", currentN.trim());
+      formDataToSend.append("identification", identification.trim());
+      formDataToSend.append("company", company.trim());
+      formDataToSend.append("dutyDuration", dutyDuration.trim());
+      formDataToSend.append("jobTitle", jobTitle.trim());
+      formDataToSend.append("salary", salary.trim());
+      formDataToSend.append("passport", passport.trim());
+      formDataToSend.append("issuedCountry", issuedCountry.trim());
+
+      // Append the rest of the fields if they are not empty or null
+      Object.keys(rest).forEach((key) => {
+        if (formData[key] !== "" && formData[key] !== null) {
+          formDataToSend.append(key, formData[key]);
+        }
+      });
+
+      if (image) {
+        formDataToSend.append("image", image);
+      }
+
       const response = await axios.post(
         `${apiUrl}/api/application/addApplication`,
         formDataToSend,
@@ -124,7 +284,9 @@ const AddUserApplication = () => {
           passport: "",
           issuedCountry: "",
         });
+
         navigate("/application", { replace: true });
+        setError("");
       } else {
         setError(
           `Failed to add application. Server responded with status: ${response.status}`
@@ -138,15 +300,13 @@ const AddUserApplication = () => {
     }
   };
 
-  const groupedFields = formSchema.reduce((acc, field) => {
-    const row = field.row || "default";
-    acc[row] = acc[row] || [];
-    acc[row].push(field);
-    return acc;
-  }, {});
-
   return (
     <>
+      {loading && (
+        <div className="text-center mt-3">
+          <Spinner animation="border" variant="primary" />
+        </div>
+      )}
       <div id="navbar-example2">
         <Common />
       </div>
@@ -167,21 +327,274 @@ const AddUserApplication = () => {
           encType="multipart/form-data"
         >
           <div className="name-details d-flex">
-            {Object.entries(groupedFields).map(([rowClass, fields]) => (
-              <div key={rowClass} className={`${rowClass} d-flex flex-wrap`}>
-                {fields.map((field) => (
-                  <FormField
-                    key={field.name}
-                    {...field}
-                    value={formData[field.name]}
-                    onChange={onChangeHandler}
-                    preview={field.name === "image" ? imagePreview : undefined}
-                  />
-                ))}
-              </div>
-            ))}
+            <div className="surname w-50 p-1">
+              <label className="form-label" htmlFor="surname">
+                Surname*
+              </label>
+              <input
+                className="form-control p-2 mb-3"
+                type="text"
+                name="surname"
+                required
+                value={formData.surname}
+                onChange={onChangeHandler}
+              />
+            </div>
+            <div className="w-50 p-1">
+              <label className="form-label" htmlFor="givenN">
+                Given Name*
+              </label>
+              <input
+                className="form-control p-2 mb-3"
+                type="text"
+                name="givenN"
+                required
+                value={formData.givenN}
+                onChange={onChangeHandler}
+              />
+            </div>
           </div>
-          {error && <span style={{ color: "red" }}>{error}</span>}
+          <div>
+            <label className="form-label" htmlFor="email">
+              Email*
+            </label>
+            <input
+              className="form-control p-2 mb-3"
+              type="email"
+              name="email"
+              required
+              value={formData.email}
+              onChange={onChangeHandler}
+            />
+          </div>
+          <div className="identification d-flex">
+            <div className="phone-no w-50 p-1">
+              <label className="form-label" htmlFor="phone">
+                Phone*
+              </label>
+              <input
+                className="form-control p-2 mb-3"
+                type="text"
+                name="phone"
+                required
+                value={formData.phone}
+                onChange={onChangeHandler}
+              />
+            </div>
+            <div className="id-number w-50 p-1">
+              <label className="form-label" htmlFor="nationalId">
+                National ID*
+              </label>
+              <input
+                className="form-control p-2 mb-3"
+                type="text"
+                name="nationalId"
+                required
+                value={formData.nationalId}
+                onChange={onChangeHandler}
+              />
+            </div>
+          </div>
+          <div className="gender_date d-flex">
+            <div className="gender w-50 p-1">
+              <label className="form-label" htmlFor="sex">
+                Sex*
+              </label>
+              <select
+                id="sex"
+                className="form-select p-2 mb-3"
+                name="sex"
+                value={formData.sex}
+                required
+                onChange={onChangeHandler}
+              >
+                <option value="" disabled>
+                  Select Sex
+                </option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+            <div className="dob w-50 p-1">
+              <label className="form-label" htmlFor="dob">
+                Date of Birth*
+              </label>
+              <input
+                className="form-control p-2 mb-3"
+                type="date"
+                name="dob"
+                required
+                value={formData.dob}
+                onChange={onChangeHandler}
+              />
+            </div>
+          </div>
+          <div className="city_birth d-flex">
+            <div className="w-50 p-1">
+              <label className="form-label" htmlFor="birthCity">
+                Place of Birth Town/City*
+              </label>
+              <input
+                className="form-control p-2 mb-3"
+                type="text"
+                name="birthCity"
+                required
+                value={formData.birthCity}
+                onChange={onChangeHandler}
+              />
+            </div>
+            <div className="id-number w-50 p-1">
+              <label className="form-label" htmlFor="currentN">
+                Current Nationality*
+              </label>
+              <input
+                className="form-control p-2 mb-3"
+                type="text"
+                name="currentN"
+                required
+                placeholder="Enter current nationality"
+                value={formData.currentN}
+                onChange={onChangeHandler}
+              />
+            </div>
+          </div>
+
+          <div className="message">
+            <label className="form-label" htmlFor="identification">
+              Identification Marks*
+            </label>
+            <textarea
+              id="identification"
+              name="identification"
+              className="form-control mb-3"
+              required
+              value={formData.identification}
+              onChange={onChangeHandler}
+            >
+              Enter identification marks
+            </textarea>
+          </div>
+          <div className="company_duration d-flex">
+            <div className="phone-no w-50 p-1">
+              <label className="form-label" htmlFor="company">
+                Company Name*
+              </label>
+              <input
+                className="form-control p-2 mb-3"
+                type="text"
+                name="company"
+                required
+                value={formData.company}
+                onChange={onChangeHandler}
+              />
+            </div>
+            <div className="id-number w-50 p-1">
+              <label className="form-label" htmlFor="dutyDuration">
+                Duty Duration*
+              </label>
+              <input
+                className="form-control p-2 mb-3"
+                type="text"
+                name="dutyDuration"
+                required
+                value={formData.dutyDuration}
+                onChange={onChangeHandler}
+              />
+            </div>
+          </div>
+          <div className="d-flex job_title">
+            <div className="w-50 p-1">
+              <label className="form-label" htmlFor="jobTitle">
+                Job Title*
+              </label>
+              <select
+                id="jobTitle"
+                name="jobTitle"
+                className="form-select p-2 mb-3"
+                value={formData.jobTitle}
+                onChange={onChangeHandler}
+              >
+                <option value="" disabled>
+                  Select Job Title
+                </option>
+                <option value="Driving">Driving</option>
+                <option value="Construction">Construction</option>
+                <option value="Electrician">Electrician</option>
+                <option value="Holder">Holder</option>
+                <option value="Housekeeping">Housekeeping</option>
+                <option value="Cleaner">Cleaner</option>
+                <option value="Plumber">Plumber</option>
+                <option value="Packaging">Packaging</option>
+                <option value="Cook">Cook</option>
+                <option value="Restaurant">Restaurant</option>
+                <option value="Manager">Manager</option>
+                <option value="Supervisor">Supervisor</option>
+                <option value="Worker">Worker</option>
+                <option value="Caring Operator">Caring Operator</option>
+              </select>
+            </div>
+            <div className="id-number w-50 p-1">
+              <label className="form-label" htmlFor="salary">
+                Salary*
+              </label>
+              <input
+                className="form-control p-2 mb-3"
+                type="text"
+                name="salary"
+                required
+                value={formData.salary}
+                onChange={onChangeHandler}
+              />
+            </div>
+          </div>
+          <div className="edit-file">
+            <label className="form-label" htmlFor="image">
+              Image
+            </label>
+            <input
+              className="form-control p-2 mb-3"
+              type="file"
+              name="image"
+              accept="image/*"
+              required
+              onChange={onChangeHandler}
+            />
+            {imagePreview && (
+              <img
+                src={imagePreview}
+                alt="Selected"
+                style={{ width: "100px", height: "100px" }}
+              />
+            )}
+          </div>
+          <div className="id-number p-1">
+            <label className="form-label" htmlFor="passport">
+              Passport*
+            </label>
+            <input
+              className="form-control p-2 mb-3"
+              type="text"
+              name="passport"
+              required
+              value={formData.passport}
+              onChange={onChangeHandler}
+            />
+          </div>
+          <div>
+            <label className="form-label" htmlFor="issuedCountry">
+              Issued Country
+            </label>
+            <input
+              className="form-control p-2 mb-5"
+              type="text"
+              name="issuedCountry"
+              required
+              placeholder="Enter issued country"
+              value={formData.issuedCountry}
+              onChange={onChangeHandler}
+            />
+            {error && <span style={{ color: "red" }}>{error}</span>}
+          </div>
           <button type="submit" className="btn btn-primary mb-2">
             {loading ? "Submitting..." : "Submit"}
           </button>

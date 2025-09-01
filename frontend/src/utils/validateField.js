@@ -59,5 +59,5 @@ export const validateApplication = (formData, applications) => {
     return "User passport already exists. Please try another passport.";
   }
 
-  return null; // No errors
+  return null;
 };
