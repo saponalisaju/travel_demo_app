@@ -6,6 +6,7 @@ import api from "../../api";
 import apiUrl from "../../secret";
 import axios from "axios";
 import Spinner from "react-bootstrap/Spinner";
+import validationRules from "../../utils/validateField";
 
 const AddUserApplication = () => {
   const [applications, setApplications] = useState([]);
@@ -48,7 +49,6 @@ const AddUserApplication = () => {
         setLoading(false);
       }
     };
-
     fetchUsers();
   }, []);
 
@@ -58,7 +58,6 @@ const AddUserApplication = () => {
     if (type === "file") {
       const selectedFile = files[0];
       const maxSize = 10 * 1024 * 1024; // 10 MB
-
       if (selectedFile && selectedFile.size > maxSize) {
         setError("File size exceeds the limit of 10 MB.");
         setFormData((prevData) => ({ ...prevData, image: null }));
@@ -66,7 +65,6 @@ const AddUserApplication = () => {
       } else {
         setError("");
         setFormData((prevData) => ({ ...prevData, image: selectedFile }));
-
         const reader = new FileReader();
         reader.onloadend = () => {
           setImagePreview(reader.result);
@@ -83,178 +81,43 @@ const AddUserApplication = () => {
     setError("");
     setLoading(true);
 
-    const {
-      surname,
-      givenN,
-      email,
-      phone,
-      nationalId,
-      sex,
-      dob,
-      birthCity,
-      currentN,
-      identification,
-      company,
-      dutyDuration,
-      jobTitle,
-      salary,
-      passport,
-      issuedCountry,
-      image,
-      ...rest
-    } = formData;
-
-    if (
-      !surname.trim() ||
-      surname.trim().length < 3 ||
-      surname.trim().length > 31
-    ) {
-      setError("Surname must be between 3 and 31 characters long.");
-      setLoading(false);
-      return;
+    // Run validation
+    for (const [field, rule] of Object.entries(validationRules)) {
+      if (!rule.validate(formData[field])) {
+        setError(rule.message);
+        setLoading(false);
+        return;
+      }
     }
 
-    if (
-      !givenN.trim() ||
-      givenN.trim().length < 3 ||
-      givenN.trim().length > 31
-    ) {
-      setError("Given name must be between 3 and 31 characters long.");
-      setLoading(false);
-      return;
-    }
-
-    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError("Please enter a valid email address.");
-      setLoading(false);
-      return;
-    }
-
-    if (!phone.trim() || !/^\d+$/.test(phone)) {
-      setError("Please enter a valid phone number.");
-      setLoading(false);
-      return;
-    }
-
-    if (!nationalId.trim()) {
-      setError("Please enter a valid national ID.");
-      setLoading(false);
-      return;
-    }
-
-    if (!sex.trim()) {
-      setError("Please enter a valid sex.");
-      setLoading(false);
-      return;
-    }
-
-    if (!dob.trim()) {
-      setError("Please enter a valid date of birth.");
-      setLoading(false);
-      return;
-    }
-
-    if (!birthCity.trim()) {
-      setError("Please enter a valid birth city.");
-      setLoading(false);
-      return;
-    }
-
-    if (!currentN.trim()) {
-      setError("Please enter a valid current nationality.");
-      setLoading(false);
-      return;
-    }
-
-    if (!identification.trim()) {
-      setError("Please enter a valid identification.");
-      setLoading(false);
-      return;
-    }
-
-    if (!company.trim()) {
-      setError("Please enter a valid company name.");
-      setLoading(false);
-      return;
-    }
-
-    if (!dutyDuration.trim()) {
-      setError("Please enter a valid duty duration.");
-      setLoading(false);
-      return;
-    }
-
-    if (!jobTitle.trim()) {
-      setError("Please enter a valid job title.");
-      setLoading(false);
-      return;
-    }
-
-    if (!salary.trim()) {
-      setError("Please enter a valid salary.");
-      setLoading(false);
-      return;
-    }
-
-    if (!passport.trim()) {
-      setError("Please enter a valid passport.");
-      setLoading(false);
-      return;
-    }
-
-    if (!issuedCountry.trim()) {
-      setError("Please enter a valid issued country.");
-      setLoading(false);
-      return;
-    }
-
-    const userExistsEmail = applications.some((u) => u.email === email);
-    const userExistsPassport = applications.some(
-      (u) => u.passport === passport
-    );
-
-    if (userExistsEmail) {
+    // Check for duplicates
+    const { email, passport } = formData;
+    if (applications.some((u) => u.email === email)) {
       setError("User email already exists. Please try another email.");
       setLoading(false);
       return;
     }
-
-    if (userExistsPassport) {
+    if (applications.some((u) => u.passport === passport)) {
       setError("User passport already exists. Please try another passport.");
       setLoading(false);
       return;
     }
 
-    try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("surname", surname.trim());
-      formDataToSend.append("givenN", givenN.trim());
-      formDataToSend.append("email", email.trim());
-      formDataToSend.append("phone", phone.trim());
-      formDataToSend.append("nationalId", nationalId.trim());
-      formDataToSend.append("sex", sex.trim());
-      formDataToSend.append("dob", dob.trim());
-      formDataToSend.append("birthCity", birthCity.trim());
-      formDataToSend.append("currentN", currentN.trim());
-      formDataToSend.append("identification", identification.trim());
-      formDataToSend.append("company", company.trim());
-      formDataToSend.append("dutyDuration", dutyDuration.trim());
-      formDataToSend.append("jobTitle", jobTitle.trim());
-      formDataToSend.append("salary", salary.trim());
-      formDataToSend.append("passport", passport.trim());
-      formDataToSend.append("issuedCountry", issuedCountry.trim());
-
-      // Append the rest of the fields if they are not empty or null
-      Object.keys(rest).forEach((key) => {
-        if (formData[key] !== "" && formData[key] !== null) {
-          formDataToSend.append(key, formData[key]);
+    // Build FormData
+    const formDataToSend = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === "image" && value) {
+        formDataToSend.append("image", value);
+      } else {
+        const trimmed = value?.trim?.();
+        if (trimmed) {
+          formDataToSend.append(key, trimmed);
         }
-      });
-
-      if (image) {
-        formDataToSend.append("image", image);
       }
+    });
 
+    // Submit
+    try {
       const response = await axios.post(
         `${apiUrl}/api/application/addApplication`,
         formDataToSend,
@@ -265,26 +128,12 @@ const AddUserApplication = () => {
       );
 
       if (response?.status === 201) {
-        setFormData({
-          surname: "",
-          givenN: "",
-          email: "",
-          phone: "",
-          nationalId: "",
-          sex: "",
-          dob: "",
-          birthCity: "",
-          currentN: "",
-          identification: "",
-          company: "",
-          dutyDuration: "",
-          jobTitle: "",
-          salary: "",
-          image: null,
-          passport: "",
-          issuedCountry: "",
-        });
-
+        setFormData(
+          Object.keys(formData).reduce((acc, key) => {
+            acc[key] = key === "image" ? null : "";
+            return acc;
+          }, {})
+        );
         navigate("/application", { replace: true });
         setError("");
       } else {

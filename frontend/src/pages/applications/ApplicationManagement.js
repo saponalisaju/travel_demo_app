@@ -19,8 +19,8 @@ const ApplicationManagement = () => {
       setLoading(true);
       try {
         const response = await api.get(`/fetchApplication`, {
-          timeout: 10000,
           params: { page, limit: 10, search },
+          timeout: 10000,
         });
         console.log("hello", response.data.applications);
         setApplications(response?.data?.applications || []);
@@ -47,6 +47,7 @@ const ApplicationManagement = () => {
         setLoading(false);
       }
     };
+
     fetchData();
   }, [page, search]);
 
