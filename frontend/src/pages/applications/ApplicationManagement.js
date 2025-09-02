@@ -27,19 +27,16 @@ const ApplicationManagement = () => {
         setTotalPages(response?.data?.totalPages || 0);
       } catch (error) {
         if (error.response) {
-          // The request was made and the server responded with a status code that falls out of the range of 2xx
           console.error("Error response:", error.response.data);
           setError(
             "Failed to fetch data from the server. Please try again later."
           );
         } else if (error.request) {
-          // The request was made but no response was received
           console.error("Error request:", error.request);
           setError(
             "No response from the server. Please check your connection."
           );
         } else {
-          // Something happened in setting up the request that triggered an Error
           console.error("Error message:", error.message);
           setError("An unexpected error occurred. Please try again.");
         }
