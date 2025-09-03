@@ -31,7 +31,7 @@ exports.fetchApplication = async (req, res) => {
       passport: { $regex: search, $options: "i" },
     });
 
-    res.json({
+    res.status(200).json({
       applications,
       totalPages: Math.ceil(count / limit),
       currentPage: page,
@@ -88,7 +88,7 @@ exports.fetchApplicationEnquiry = async (req, res) => {
 
     const count = await Application.countDocuments(query);
 
-    res.json({
+    res.status(200).json({
       applications,
       totalPages: Math.ceil(count / limit),
       currentPage: page,
@@ -173,7 +173,7 @@ exports.updateApplication = async (req, res) => {
       }
     );
     await updatedUser.save();
-    res.json(updatedUser);
+    res.status(200).json(updatedUser);
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -216,27 +216,17 @@ exports.updateApplicationAdd = async (req, res) => {
       );
     }
 
-    if (
-      existingUser.file1 ||
-      existingUser.file2 ||
-      existingUser.file3 ||
-      existingUser.file4
-    ) {
+    if (existingUser.file1) {
       await sendEmailJobLetter(existingUser.email, existingUser.surname);
     }
-    if (
-      existingUser.file5 ||
-      existingUser.file6 ||
-      existingUser.file7 ||
-      existingUser.file8
-    ) {
+    if (existingUser.file2) {
       await sendEmailLmiAs(existingUser.email, existingUser.surname);
     }
 
-    if (existingUser.file9 || existingUser.file10) {
+    if (existingUser.file3 || existingUser.file4) {
       await sendEmailVisa(existingUser.email, existingUser.surname);
     }
-    if (existingUser.file11) {
+    if (existingUser.file5) {
       await sendEmailWorkPermits(existingUser.email, existingUser.surname);
     }
 
@@ -261,7 +251,7 @@ exports.updateApplicationApprove = async (req, res) => {
 
       await sendEmailApplicationApproved(appUser.email, appUser.surname);
 
-      res.json(updatedUser);
+      res.status(200).json(updatedUser);
     } else {
       res.status(404).json({ message: "Application not found" });
     }
@@ -284,7 +274,7 @@ exports.updateApplicationPending = async (req, res) => {
       return res.status(404).send("User not found.");
     }
 
-    res.json(updatedUser);
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.error("Error updating application:", error);
     res.status(500).send(error.message);
@@ -301,7 +291,7 @@ exports.updateApplicationReject = async (req, res) => {
         { isStatus: "rejected" },
         { new: true }
       );
-      res.json(updatedUser);
+      res.status(200).json(updatedUser);
     } else {
       res.status(404).json({ message: "Application not found" });
     }
