@@ -1,149 +1,241 @@
 import React from "react";
-import Common from "../../layouts/Common";
 import "../../assets/styles/main.css";
 import apiUrl from "../../secret";
 import { useLocation } from "react-router-dom";
+import Print from "./Print";
+import logo from "../../assets/images/logo1.png";
+import flag from "../../assets/images/aus_flag.avif";
+import stamp_img from "../../assets/images/stamp2.png";
+import moment from "moment";
 
 const ViewOne = () => {
   const location = useLocation();
-  const { application } = location.state || {};
+  const { applications } = location.state || {};
 
-  if (!application) {
+  if (!applications) {
     return <div>No application data found.</div>;
   }
 
   return (
     <React.Fragment>
-      <Common />
       <main
         data-bs-spy="scroll"
         data-bs-target="#example2"
         data-bs-offset="0"
-        className="me-5 user_manage "
+        className=" view_one_top "
         tabIndex="0"
-        style={{ overflowY: "scroll", maxHeight: "80vh" }}
+        style={{ overflowY: "scroll", maxHeight: "100vh" }}
       >
-        <div className="">
-          <h2 className="m-2 view_one_head">Applicants Copy(Approved)</h2>
-          <ul className="align-item-left">
-            <li className=" " key={application._id}>
-              <div className="text-bg-light ">
-                <div className="d-flex me-auto">
-                  <img
-                    className="application_img p-2"
-                    src={`${apiUrl}/uploads/applicationImages/${application.image}`}
-                    alt="Applicant"
-                  />
-                </div>
-                <table className="table table-bordered">
-                  <tbody>
-                    <tr>
-                      <th className="fst-italic text-black fw-bold text-center text-bg-light ">
-                        {application.surname}
-                      </th>
-                    </tr>
-                    <tr>
-                      <th className="bg-primary">A. Personal Particulars</th>
-                    </tr>
-                    <tr>
-                      <td colSpan="3">
-                        <table className="table table-bordered mb-0">
-                          <tbody>
-                            <tr>
-                              <td>Surname</td>
-                              <td>{application.surname}</td>
-                            </tr>
-                            <tr>
-                              <td>Given Name</td>
-                              <td>{application.givenN}</td>
-                            </tr>
-                            <tr>
-                              <td>Sex</td>
-                              <td colSpan="2">{application.sex}</td>
-                              <td>Date of Birth</td>
-                              <td colSpan="2">{application.dob}</td>
-                            </tr>
-                            <tr>
-                              <td>Place of Birth Town/City</td>
-                              <td colSpan="2">{application.birthCity}</td>
-                              <td>Visible Identification Marks</td>
-                              <td colSpan="2">{application.identification}</td>
-                            </tr>
-                            <tr>
-                              <td>Current Nationality</td>
-                              <td colSpan="2">{application.currentN}</td>
-                              <td>National ID No</td>
-                              <td colSpan="2">{application.nationalId}</td>
-                              <td colSpan="2"></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th className="bg-primary">B. Company Details</th>
-                    </tr>
-                    <tr>
-                      <td colSpan="3">
-                        <table className="table table-bordered mb-0">
-                          <tbody>
-                            <tr>
-                              <td>Company Name</td>
-                              <td colSpan="2">{application.company}</td>
-                              <td>Job Title</td>
-                              <td colSpan="2">{application.jobTitle}</td>
-                            </tr>
-                            <tr>
-                              <td>Duty Duration</td>
-                              <td colSpan="2">{application.dutyDuration}</td>
-                              <td>Salary</td>
-                              <td colSpan="2">{application.salary}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th className="bg-primary">C. Passport Details</th>
-                    </tr>
-                    <tr>
-                      <td colSpan="3">
-                        <table className="table table-bordered mb-0">
-                          <tbody>
-                            <tr>
-                              <td>Passport No</td>
-                              <td>{application.passport}</td>
-                              <td>Issued Country</td>
-                              <td>{application.issuedCountry}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th className="bg-primary">
-                        D. Applicant's Contact Details
-                      </th>
-                    </tr>
-                    <tr>
-                      <td colSpan="3">
-                        <table className="table table-bordered">
-                          <tbody>
-                            <tr>
-                              <td>Phone</td>
-                              <td>{application.phone}</td>
-                              <td>Email</td>
-                              <td>{application.email}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </li>
+        <div className="view_one_section">
+          <ul className="view_one_body ">
+            {applications.map((application) => {
+              const formattedDate = moment(
+                application.dob,
+                moment.ISO_8601
+              ).format("YYYY-MM-DD");
+              return (
+                <li className=" " key={application._id}>
+                  <h2 className=" view_one_head pb-3">
+                    Applicants Copy({application.isStatus})
+                  </h2>
+                  <div className=" view_one_main">
+                    <div className="d-flex me-auto ">
+                      <div>
+                        {application.image ? (
+                          <img
+                            className="user_image p-2"
+                            src={`${application.image}`}
+                            alt="Applicant"
+                          />
+                        ) : (
+                          <p>No image available</p>
+                        )}
+                        {application.isStatus === "approved" && (
+                          <img
+                            className="stamp_logo"
+                            src={stamp_img}
+                            alt="Approved Seal"
+                          />
+                        )}
+                      </div>
+                      <img className="logo_p" src={flag} alt="flag" />
+                      <img className="logo_q " src={logo} alt="logo" />
+                    </div>
+
+                    <div className="border border-2 view_one mb-3">
+                      <h2 className=" text-black fw-bold text-center text-bg-light text-uppercase">
+                        {application.givenN}&nbsp;{application.surname}
+                      </h2>
+
+                      <div>
+                        <h4 className=" p-2">A. Personal Particulars</h4>
+                      </div>
+                      <div className="surname_given">
+                        <div className="d-flex surname_head_one">
+                          <strong className="border surname_one">
+                            Surname
+                          </strong>
+                          <span className="border surname_result_one">
+                            {application.surname}
+                          </span>
+                        </div>
+                        <div className="d-flex">
+                          <strong className="border surname_one">
+                            Given Name
+                          </strong>
+                          <span className="border surname_result_one">
+                            {application.givenN}
+                          </span>
+                        </div>
+                        <div className="d-flex sex_birth">
+                          <div className="d-flex surname_head">
+                            <strong className="border surname_sex_one">
+                              Sex
+                            </strong>
+                            <span className="border surname_sex">
+                              {application.sex}
+                            </span>
+                          </div>
+                          <div className="d-flex surname_head">
+                            <strong className="border surname_sex_one">
+                              Date of Birth
+                            </strong>
+                            <span className="border surname_sex">
+                              {formattedDate}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="d-flex sex_birth">
+                          <div className="d-flex surname_head">
+                            <strong className="border surname_sex">
+                              Place of Birth Town/City
+                            </strong>
+                            <span className="border surname_sex">
+                              {application.birthCity}
+                            </span>
+                          </div>
+                          <div className="d-flex surname_head">
+                            <strong className="border surname_sex">
+                              Visible Identification Marks
+                            </strong>
+                            <span className="border surname_sex">
+                              {application.identification}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="d-flex sex_birth">
+                          <div className="d-flex surname_head">
+                            <strong className="border surname_sex_one">
+                              Current Nationality
+                            </strong>
+                            <span className="border surname_sex">
+                              {application.currentN}
+                            </span>
+                          </div>
+                          <div className="d-flex surname_head">
+                            <strong className="border surname_sex_one">
+                              National ID No
+                            </strong>
+                            <span className="border surname_sex">
+                              {application.nationalId}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <h4 className=" p-2">B. Company Details</h4>
+
+                      <div className="d-flex sex_birth">
+                        <div className="d-flex surname_head">
+                          <strong className="border surname_sex_one">
+                            Company Name
+                          </strong>
+                          <span className="border surname_sex">
+                            {application.company}
+                          </span>
+                        </div>
+                        <div className="d-flex surname_head">
+                          <strong className="border surname_sex_one">
+                            Job Title
+                          </strong>
+                          <span className="border surname_sex">
+                            {application.jobTitle}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="d-flex sex_birth">
+                        <div className="d-flex surname_head">
+                          <strong className="border surname_sex">
+                            Duty Duration
+                          </strong>
+                          <span className="border surname_sex">
+                            {application.dutyDuration}
+                          </span>
+                        </div>
+                        <div className="d-flex surname_head">
+                          <strong className="border surname_sex">Salary</strong>
+                          <span className="border surname_sex">
+                            {application.salary}
+                          </span>
+                        </div>
+                      </div>
+
+                      <h4 className=" p-2">C. Passport Details</h4>
+
+                      <div className="d-flex sex_birth">
+                        <div className="d-flex surname_head">
+                          <strong className="border surname_sex_one">
+                            Passport No
+                          </strong>
+                          <span className="border surname_sex">
+                            {application.passport}
+                          </span>
+                        </div>
+                        <div className="d-flex surname_head">
+                          <strong className="border surname_sex_one">
+                            Issued Country
+                          </strong>
+                          <span className="border surname_sex">
+                            {application.issuedCountry}
+                          </span>
+                        </div>
+                      </div>
+
+                      <h4 className=" p-2">D. Applicant's Contact Details</h4>
+
+                      <div className="d-flex sex_birth">
+                        <div className="d-flex surname_head">
+                          <strong className="border surname_sex_one">
+                            Phone
+                          </strong>
+                          <span className="border surname_sex">
+                            {application.phone}
+                          </span>
+                        </div>
+                        <div className="d-flex surname_head">
+                          <strong className="border surname_sex_one">
+                            Email
+                          </strong>
+                          <span className="border surname_sex email_user">
+                            {application.email}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="view_one me-auto p-3">
+                      <Print apiUrl={apiUrl} application={application} />
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
+          <div className="footer p-2">
+            <p className="footer_area text-center">
+              Copyright &copy; {new Date().getFullYear()} Australia Works Visa|
+              All Rights Reserved.
+            </p>
+          </div>
         </div>
       </main>
     </React.Fragment>
