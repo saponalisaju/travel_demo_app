@@ -123,7 +123,7 @@ exports.addApplication = async (req, res) => {
     if (image) {
       ({ secure_url, public_id } = await uploadApplicationFile(
         image,
-        "travelAppLocal/application"
+        "travelDemo/application"
       ));
     }
     const newApplication = new Application({
@@ -155,7 +155,7 @@ exports.updateApplication = async (req, res) => {
     if (image) {
       const { secure_url, public_id } = await uploadApplicationFile(
         image,
-        "travelAppLocal/application"
+        "travelDemo/application"
       );
       updateField.image = secure_url;
       updateField.imagePublicId = public_id;
@@ -192,7 +192,7 @@ exports.updateApplicationAdd = async (req, res) => {
       const filePath = files[fileField][0].path;
       const { secure_url, public_id } = await uploadApplicationFile(
         filePath,
-        `travelAppLocal/${fileField}`
+        `travelDemo/${fileField}`
       );
       updateFields[fileField] = secure_url;
       updateFields[`${fileField}PublicId`] = public_id;
