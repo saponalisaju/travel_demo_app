@@ -3,9 +3,9 @@ import "../../assets/styles/main.css";
 import apiUrl from "../../secret";
 import { useLocation } from "react-router-dom";
 import Print from "./Print";
-import logo from "../../assets/images/logo1.png";
-import flag from "../../assets/images/aus_flag.avif";
-import stamp_img from "../../assets/images/stamp2.png";
+import logo from "../../assets/images/avatar.png";
+// import flag from "../../assets/images/541384.png";
+// import stamp_img from "../../assets/images/stamp2.png";
 import moment from "moment";
 
 const ViewOne = () => {
@@ -50,15 +50,15 @@ const ViewOne = () => {
                         ) : (
                           <p>No image available</p>
                         )}
-                        {application.isStatus === "approved" && (
+                        {/* {application.isStatus === "approved" && (
                           <img
                             className="stamp_logo"
                             src={stamp_img}
                             alt="Approved Seal"
                           />
-                        )}
+                        )} */}
                       </div>
-                      <img className="logo_p" src={flag} alt="flag" />
+                      {/* <img className="logo_p" src={flag} alt="flag" /> */}
                       <img className="logo_q " src={logo} alt="logo" />
                     </div>
 
