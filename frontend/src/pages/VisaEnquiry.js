@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Nav from "react-bootstrap/Nav";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./auth.css";
@@ -8,37 +8,59 @@ import apiUrl from "../secret";
 
 const VisaEnquiry = () => {
   const navigate = useNavigate();
-  const [application, setApplication] = useState(null);
-  const [currentN, setCurrentN] = useState("");
-  const [dob, setDob] = useState("");
-  const [passport, setPassport] = useState("");
+  const [applications, setApplications] = useState([]);
+  const [search, setSearch] = useState("");
+  const [search1, setSearch1] = useState("");
+  const [search2, setSearch2] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    try {
-      const response = await axios.get(
-        `${apiUrl}/api/application/fetchApplicationEnquiry`,
-        { params: { currentN, dob, passport } }
-      );
-      console.log("Response:", response.data); // Debugging line
-      if (response.data.applications.length > 0) {
-        setApplication(response.data.applications[0]);
-        navigate("/view-one", {
-          state: { application: response.data.applications[0] },
-        });
-      } else {
-        console.log("No application found");
-        setError("No application found.");
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      const fetchData = async () => {
+        setLoading(true);
+        setError("");
+        try {
+          const response = await axios.get(
+            `${apiUrl}/api/application/fetchApplicationEnquiry`,
+            {
+              params: { limit: 10, search, search1, search2 },
+              timeout: 10000,
+            }
+          );
+          const fetchedApp = response.data.applications;
+          console.log("hello", response);
+          setApplications(fetchedApp);
+        } catch (error) {
+          if (error.response) {
+            console.error("Error headers:", error.response.headers);
+            setError(`Error response: ${error.response.data}`);
+          } else if (error.request) {
+            console.error("Error request:", error.request);
+            setError("Error request: " + error.request);
+          } else {
+            console.error("Error message:", error.message);
+            setError("Error message: " + error.message);
+          }
+        }
+        setLoading(false);
+      };
+
+      if (search !== "" && search1 !== "" && search2 !== "") {
+        fetchData();
       }
-    } catch (error) {
-      console.error("Error fetching application:", error);
-      setError("Error fetching application. Please try again."); // Debugging line
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [search, search1, search2]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (applications.length > 0) {
+      navigate("/view-one", { state: { applications } });
+    } else {
+      setError("No valid application found. Please check your input.");
     }
-    setLoading(false);
   };
 
   return (
@@ -63,11 +85,11 @@ const VisaEnquiry = () => {
             </label>
             <input
               className="form-control mb-3"
-              value={passport}
+              value={search}
               type="text"
               name="passportNumber"
               id="passport"
-              onChange={(e) => setPassport(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Passport Number"
             />
 
@@ -76,8 +98,8 @@ const VisaEnquiry = () => {
             </label>
             <input
               className="form-control mb-3"
-              value={currentN}
-              onChange={(e) => setCurrentN(e.target.value)}
+              value={search1}
+              onChange={(e) => setSearch1(e.target.value)}
               type="text"
               name="country"
               id="country"
@@ -89,8 +111,8 @@ const VisaEnquiry = () => {
             </label>
             <input
               className="form-control mb-3"
-              value={dob}
-              onChange={(e) => setDob(e.target.value)}
+              value={search2}
+              onChange={(e) => setSearch2(e.target.value)}
               type="date"
               name="dateOfBirth"
               id="dob"
@@ -113,13 +135,6 @@ const VisaEnquiry = () => {
         <p className="footer_area text-bg-dark p-4 text-center">
           &copy; 2024 Job Visa All Rights Reserved.
         </p>
-        {application && (
-          <div className="application-details">
-            <h3>Application Details</h3>
-            <p>Name: {application.name}</p>
-            <p>Details: {application.details}</p>
-          </div>
-        )}
       </div>
     </>
   );
