@@ -17,17 +17,15 @@ const userManageRouter = require("./src/routes/userManageRoute");
 const sliderRouter = require("./src/routes/sliderRoute");
 const companyRouter = require("./src/routes/companyRoute");
 const applicationRouter = require("./src/routes/applicationRoute");
-const { clientURL } = require("./secret");
 
 //middleware
 const allowedOrigins = [
   "http://localhost:3000",
   "https://traveltestdemoapp.netlify.app",
-  "https://allcartify.com",
 ];
 const corsOptions = {
   origin: (origin, callback) => {
-    if (allowedOrigins.includes(origin) || !origin) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));

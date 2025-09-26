@@ -36,7 +36,7 @@ const Header = () => {
               VISA ENQUIRY
             </NavLink>
             <NavLink className="btnHome" to="/login">
-              SIGN IN
+              LOGIN
             </NavLink>
           </Nav>
         </Navbar.Collapse>

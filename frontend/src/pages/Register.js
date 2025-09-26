@@ -58,7 +58,7 @@ const Register = () => {
         </div>
       )}
       <div className="register-form">
-        <h2 className="text-center">Register</h2>
+        <h2 className="text-center">Sign Up</h2>
         <form className="form-control" onSubmit={handleRegister}>
           <div className="form-field">
             <label className="form-label" htmlFor="name">
