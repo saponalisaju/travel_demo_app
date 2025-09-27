@@ -5,8 +5,6 @@
 # production
 /build
 
-# secret
-/.secret.js
 
 
 
