@@ -22,6 +22,7 @@ const applicationRouter = require("./src/routes/applicationRoute");
 const allowedOrigins = [
   "http://localhost:3000",
   "https://traveltestdemoapp.netlify.app",
+  "https://visaglobal24.com",
 ];
 const corsOptions = {
   origin: (origin, callback) => {
