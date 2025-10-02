@@ -69,12 +69,13 @@ const Dashboard = () => {
               <h4 className="">Total Pages</h4>
             </div>
             <div className="applications-list">
-              {applications.map((app, index) => (
-                <div key={index} className="application-item">
-                  <p>{app.name}</p>
-                  <p>{app.details}</p>
-                </div>
-              ))}
+              {Array.isArray(applications) &&
+                applications.map((app, index) => (
+                  <div key={index} className="application-item">
+                    <p>{app.name}</p>
+                    <p>{app.details}</p>
+                  </div>
+                ))}
             </div>
           </div>
           <div className="pagination-controls">
