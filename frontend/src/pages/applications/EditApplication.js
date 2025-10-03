@@ -103,7 +103,7 @@ const EditApplication = () => {
 
     try {
       const response = await api.put(
-        `/updateApplication/${id}`,
+        `/application/updateApplication/${id}`,
         formDataWithFile,
         {
           headers: { "Content-Type": "multipart/form-data" },

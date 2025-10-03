@@ -51,12 +51,17 @@ const ApplicationManagement = () => {
   const deleteHandler = async (id) => {
     if (typeof id === "string" && id.length === 24) {
       try {
-        const response = await api.delete(`/deleteApplication/${id}`);
+        const response = await api.delete(
+          `/application/deleteApplication/${id}`
+        );
         if (response.status === 200) {
-          const updatedResponse = await api.get(`/fetchApplication`, {
-            timeout: 10000,
-            params: { page, limit: 10, search },
-          });
+          const updatedResponse = await api.get(
+            `/application/fetchApplication`,
+            {
+              timeout: 10000,
+              params: { page, limit: 10, search },
+            }
+          );
           setApplications(updatedResponse?.data?.applications || []);
           setTotalPages(updatedResponse?.data?.totalPages || 0);
         } else {

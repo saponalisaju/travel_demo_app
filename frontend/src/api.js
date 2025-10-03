@@ -2,7 +2,7 @@ import axios from "axios";
 import apiUrl from "./secret";
 
 const api = axios.create({
-  baseURL: `${apiUrl}/api/application`,
+  baseURL: `${apiUrl}/api`,
   headers: {
     "Content-Type": "application/json",
   },

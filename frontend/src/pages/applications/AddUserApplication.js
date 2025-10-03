@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import "../../assets/styles/main.css";
 import api from "../../api";
 import apiUrl from "../../secret";
-import axios from "axios";
 import Spinner from "react-bootstrap/Spinner";
 import validationRules from "../../utils/validateField";
 
@@ -118,8 +117,8 @@ const AddUserApplication = () => {
 
     // Submit
     try {
-      const response = await axios.post(
-        `${apiUrl}/api/application/addApplication`,
+      const response = await api.post(
+        `/application/addApplication`,
         formDataToSend,
         {
           headers: { "Content-Type": "multipart/form-data" },
