@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./auth.css";
-import apiUrl from "../secret";
 import Spinner from "react-bootstrap/Spinner";
+import api from "../api";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -26,11 +25,10 @@ const Register = () => {
     const formData = { name, email, password };
 
     try {
-      const response = await axios.post(
-        `${apiUrl}/api/users/register`,
-        formData,
-        { headers: { "Content-Type": "application/json" }, timeout: 5000 }
-      );
+      const response = await api.post(`/users/register`, formData, {
+        headers: { "Content-Type": "application/json" },
+        timeout: 5000,
+      });
 
       console.log("Registration successful:", response.data);
       navigate("/login");
