@@ -3,7 +3,6 @@ import Common from "../../layouts/Common";
 import { useNavigate } from "react-router-dom";
 import "../../assets/styles/main.css";
 import api from "../../api";
-import apiUrl from "../../secret";
 import Spinner from "react-bootstrap/Spinner";
 import validationRules from "../../utils/validateField";
 
