@@ -10,24 +10,25 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(""); // New state for error message
+  const [error, setError] = useState(null); // New state for error message
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(null); // Clear previous error message
 
     if (!name || !email || !password) {
       setError("All fields are required");
       console.error("Missing input data");
       return;
     }
-    setIsLoading(true);
-    setError(""); // Clear previous error message
+
     const formData = { name, email, password };
 
     try {
       const response = await api.post(`/users/register`, formData, {
         headers: { "Content-Type": "application/json" },
-        timeout: 5000,
+        timeout: 10000,
       });
 
       console.log("Registration successful:", response.data);
@@ -45,6 +46,8 @@ const Register = () => {
         console.error("Error setting up the request:", error.message);
         setError("An error occurred during registration. Please try again.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 

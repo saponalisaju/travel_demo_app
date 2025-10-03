@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import "./auth.css";
 import apiUrl from "../secret";
+import Spinner from "react-bootstrap/esm/Spinner";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const setCookie = (name, value, days) => {
     const expires = new Date(Date.now() + days * 864e5).toUTCString();
@@ -25,13 +26,14 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
     if (!email || !password) {
       setError("All fields are required");
       console.error("Missing input data");
       return;
     }
-    setIsLoading(true);
-    setError("");
+
     const formData = { email, password };
     try {
       const response = await axios.post(`${apiUrl}/api/users/login`, formData, {
@@ -49,7 +51,6 @@ const Login = () => {
         setError("Login failed. No token received.");
       }
     } catch (error) {
-      setIsLoading(false);
       if (error.response) {
         console.error(
           "Server responded with an error:",
@@ -68,8 +69,9 @@ const Login = () => {
         console.error("Error setting up the request:", error.message);
         setError("An error occurred during login. Please try again.");
       }
+    } finally {
+      setLoading(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -91,7 +93,12 @@ const Login = () => {
       <div className="register-form">
         <h2 className="text-center mb-3">World Job Visa</h2>
         <form className="form-control" onSubmit={handleLogin}>
-          {error && <div className="alert alert-danger">{error}</div>}
+          {loading && (
+            <div>
+              <Spinner animation="border" variant="primary" />
+            </div>
+          )}
+          {error && <p className="alert alert-danger">{error}</p>}
           <div>
             <label htmlFor="email">Email:</label>
             <input
