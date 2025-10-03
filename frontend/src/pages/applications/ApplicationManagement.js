@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Common from "../../layouts/Common";
 import "../../assets/styles/main.css";
-import api from "../../api";
+
 import Spinner from "react-bootstrap/Spinner";
+import api from "../../api";
 
 const ApplicationManagement = () => {
   const [applications, setApplications] = useState([]);
@@ -18,7 +19,7 @@ const ApplicationManagement = () => {
       setError("");
       setLoading(true);
       try {
-        const response = await api.get(`/fetchApplication`, {
+        const response = await api.get(`/application/fetchApplication`, {
           params: { page, limit: 10, search },
           timeout: 10000,
         });
