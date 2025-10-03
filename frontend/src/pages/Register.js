@@ -66,7 +66,7 @@ const Register = () => {
               Name*
             </label>
             <input
-              className="form-control p-1 mb-1"
+              className="form-control p-2 mb-3"
               type="text"
               id="name"
               name="name"
@@ -81,7 +81,7 @@ const Register = () => {
               Email*
             </label>
             <input
-              className="form-control p-1 mb-1"
+              className="form-control p-2 mb-3"
               type="email"
               id="email"
               name="email"
@@ -95,7 +95,7 @@ const Register = () => {
               Password*
             </label>
             <input
-              className="form-control p-1 mb-1"
+              className="form-control p-2 mb-3"
               type="password"
               id="password"
               name="password"
