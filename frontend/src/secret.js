@@ -1,3 +1,3 @@
-const apiUrl = process.env.REACT_APP_API_URL;
+const apiUrl = "https://travel-demo-app-m4no.onrender.com";
 
 export default apiUrl;
