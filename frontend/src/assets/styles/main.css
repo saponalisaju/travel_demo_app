@@ -103,7 +103,7 @@ hr {
 .user_profile,
 .user_application,
 .add_user {
-  width: 68rem;
+  width: 75%;
   margin-top: 5rem;
   padding: 0.5rem 1.5rem 0 0;
   position: absolute;
@@ -208,19 +208,19 @@ hr {
 /* paginated list css end */
 
 @media (max-width: 1400px) {
-  .user_manage,
+  /* .user_manage,
   .user_profile,
   .add_user {
     width: 68rem;
-  }
+  } */
 }
 
 @media (max-width: 1200px) {
-  .user_manage,
+  /* .user_manage,
   .user_profile,
   .add_user {
     width: 57rem;
-  }
+  } */
 }
 
 @media (max-width: 992px) {

@@ -8,7 +8,7 @@ import validationRules from "../../utils/validateField";
 
 const AddUserApplication = () => {
   const [applications, setApplications] = useState([]);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     surname: "",
@@ -35,10 +35,12 @@ const AddUserApplication = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      setError("");
+      setError(null);
       setLoading(true);
       try {
-        const response = await api.get(`/fetchApplication`, { timeout: 5000 });
+        const response = await api.get(`application/fetchApplication`, {
+          timeout: 5000,
+        });
         setApplications(response.data.applications || []);
       } catch (error) {
         console.error("Error fetching applications:", error);
@@ -76,7 +78,7 @@ const AddUserApplication = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError(null);
     setLoading(true);
 
     // Run validation
@@ -149,11 +151,6 @@ const AddUserApplication = () => {
 
   return (
     <>
-      {loading && (
-        <div className="text-center mt-3">
-          <Spinner animation="border" variant="primary" />
-        </div>
-      )}
       <div id="navbar-example2">
         <Common />
       </div>
@@ -161,13 +158,19 @@ const AddUserApplication = () => {
         data-bs-spy="scroll"
         data-bs-target="#navbar-example2"
         data-bs-offset="0"
-        className="scrollspy-example add_user me-5"
+        className="scrollspy-example add_user"
         tabIndex="0"
-        style={{ overflowY: "scroll", maxHeight: "100vh" }}
+        style={{ overflowY: "scroll", maxHeight: "110vh" }}
       >
         <h2 className="visa_form">Visa Application Form</h2>
         <p className="particulars">Personal Particulars</p>
+        {loading && (
+          <div className="text-center mt-3">
+            <Spinner animation="border" variant="primary" />
+          </div>
+        )}
         <hr className="user_application_hr " />
+
         <form
           onSubmit={handleSubmit}
           className="me-5 absolute "

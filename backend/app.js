@@ -18,25 +18,39 @@ const sliderRouter = require("./src/routes/sliderRoute");
 const companyRouter = require("./src/routes/companyRoute");
 const applicationRouter = require("./src/routes/applicationRoute");
 
+app.enable("trust proxy");
+
 //middleware
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://traveltestdemoapp.netlify.app",
-  "https://visaglobal24.com",
+  "https://austrailaworkpermitvisa.com",
+  "https://www.austrailaworkpermitvisa.com",
 ];
 const corsOptions = {
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
+    if (!origin) return callback(null, true);
+    const normalized = origin.replace(/\/+$/, "");
+    if (allowedOrigins.includes(normalized)) {
+      return callback(null, true);
     }
+
+    try {
+      const host = new URL(normalized).host; // e.g., canada-permit-xyz.vercel.app
+      const isVercelPreview = /\.vercel\.app$/i.test(host);
+      if (isVercelPreview) return callback(null, true);
+    } catch (_) {}
+    return callback(new Error("Not allowed by CORS"));
   },
-  methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS",
-  allowedHeaders: "Content-Type, Accept, Authorization",
   credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Accept",
+    "Authorization",
+    "X-Requested-With",
+  ],
   optionsSuccessStatus: 204,
-  maxAge: 86400,
+  maxAge: 86400, // cache preflight for 1 day
 };
 
 app.use(cors(corsOptions));

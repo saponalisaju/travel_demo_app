@@ -132,7 +132,7 @@ const EditApplication = () => {
         data-bs-spy="scroll"
         data-bs-target="#navbar-example2"
         data-bs-offset="0"
-        className="scrollspy-example me-5 user_manage"
+        className="scrollspy-example user_manage"
         tabIndex="0"
         style={{ overflowY: "scroll", maxHeight: "80vh" }}
       >
@@ -142,7 +142,7 @@ const EditApplication = () => {
 
         <form
           onSubmit={handleSubmit}
-          className=""
+          className="form_section"
           encType="multipart/form-data"
         >
           <div className="name-details d-flex">
