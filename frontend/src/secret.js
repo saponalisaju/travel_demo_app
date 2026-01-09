@@ -1,3 +1,3 @@
-const apiUrl = "https://travel-demo-app-m4no.onrender.com";
+const apiUrl = "https://travel-demo-app-p8op.onrender.com";
 
 export default apiUrl;
