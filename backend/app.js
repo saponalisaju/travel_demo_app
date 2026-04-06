@@ -30,45 +30,42 @@ app.set("trust proxy", 1);
 //  CORS Configuration
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://austrailaworkpermitvisa.netlify.com",
+  "https://traveltourapp.netlify.app/",
   "https://www.austrailaworkpermitvisa.com",
 ];
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, Postman, etc.)
-    if (!origin) return callback(null, true);
-
-    const normalized = origin.replace(/\/+$/, "");
-
-    // Allow exact matches
-    if (allowedOrigins.includes(normalized)) {
-      return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
     }
-
-    // Allow Vercel preview deployments (*.vercel.app)
-    try {
-      const host = new URL(normalized).host;
-      const isVercelPreview = /\.vercel\.app$/i.test(host);
-      if (isVercelPreview) return callback(null, true);
-    } catch (err) {
-      console.error("CORS URL parse error:", err.message);
-    }
-
-    // Block all other origins
-    return callback(new Error("Not allowed by CORS"));
   },
-  credentials: true, // Allow cookies & auth headers
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: [
-    "Content-Type",
-    "Accept",
-    "Authorization",
-    "X-Requested-With",
-  ],
-  optionsSuccessStatus: 204,
-  maxAge: 86400, // Cache preflight response for 24 hours
+  methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS",
+  allowedHeaders:
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+  credentials: true,
+  optionsSuccessStatus: 200,
 };
+app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+  if (allowedOrigins.includes(req.headers.origin)) {
+    res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
+  }
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,POST,PUT,DELETE,PATCH,OPTIONS",
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+  );
+  console.log(`Request received from origin: ${req.headers.origin}`);
+  next();
+});
 
 // Apply CORS middleware
 app.use(cors(corsOptions));
