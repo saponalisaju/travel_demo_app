@@ -1,0 +1,125 @@
+/* ==============================
+   💼 Card Base
+============================== */
+.job-overview-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  transition: 0.3s;
+}
+
+.job-overview-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* ==============================
+   🏢 Header
+============================== */
+.job-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.job-icon {
+  font-size: 20px;
+  color: #ffc107;
+  border: 2px solid #ffc107;
+  border-radius: 50%;
+  padding: 10px;
+}
+
+/* ==============================
+   📄 Sections
+============================== */
+.info-section {
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.info-section:last-child {
+  border-bottom: none;
+}
+
+.info-section p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+/* ==============================
+   📱 Responsive
+============================== */
+@media (max-width: 576px) {
+  .job-overview-card {
+    padding: 15px;
+  }
+}
+
+/* ==============================
+   💼 Job Card
+============================== */
+.job-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  transition: 0.3s;
+}
+
+.job-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* ==============================
+   🏢 Header
+============================== */
+.job-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.job-icon {
+  font-size: 20px;
+  color: #ffc107;
+  border: 2px solid #ffc107;
+  border-radius: 50%;
+  padding: 10px;
+}
+
+/* ==============================
+   📄 Content
+============================== */
+.job-content p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+/* ==============================
+   📱 Responsive Grid
+============================== */
+.job-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 40px;
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+  .job-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+  .job-list {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+}

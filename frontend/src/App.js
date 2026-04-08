@@ -37,11 +37,14 @@ import PrivateRoute from "./pages/PrivateRoute";
 import AddSlider from "./pages/sliders/AddSlider";
 import VisaEnquiry from "./pages/VisaEnquiry";
 import ViewOne from "./pages/applications/ViewOne";
+import Header from "./layouts/header/Header";
+import Footer from "./layouts/footer/Footer";
 
 const App = () => {
   return (
     <>
       <Router>
+        <Header />
         <Routes>
           <Route
             path="/userManagement"
@@ -236,14 +239,6 @@ const App = () => {
             }
           />
           <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
             path="/enquiry"
             element={
               <PrivateRoute>
@@ -265,6 +260,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
+        <Footer />
       </Router>
     </>
   );

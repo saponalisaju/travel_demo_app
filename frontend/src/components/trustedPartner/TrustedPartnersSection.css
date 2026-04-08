@@ -1,0 +1,92 @@
+/* ==============================
+   🤝 Trusted Section
+============================== */
+.trusted-section {
+  padding: 60px 20px;
+  background: #e9f7fb;
+  text-align: center;
+}
+
+/* ==============================
+   🧾 Header
+============================== */
+.section-header {
+  max-width: 700px;
+  margin: 0 auto 30px;
+}
+
+.section-header h2 {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.section-header p {
+  color: #555;
+}
+
+.section-header a {
+  color: #007bff;
+  margin-left: 5px;
+  text-decoration: none;
+}
+
+.section-header a:hover {
+  text-decoration: underline;
+}
+
+/* ==============================
+   🚩 Flags Container
+============================== */
+.flags-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* ==============================
+   🚩 Flag Item
+============================== */
+.flag-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.flag-item img:hover {
+  transform: scale(1.1);
+}
+
+/* ==============================
+   📱 Responsive
+============================== */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .section-header h2 {
+    font-size: 24px;
+  }
+
+  .flag-item img {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .trusted-section {
+    padding: 40px 15px;
+  }
+
+  .section-header h2 {
+    font-size: 20px;
+  }
+
+  .flag-item img {
+    width: 60px;
+    height: 60px;
+  }
+}
